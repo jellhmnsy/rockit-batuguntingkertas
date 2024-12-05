@@ -1,0 +1,29 @@
+.container {
+    background-color: aquamarine;
+    padding: 40px;
+    display: grid;
+    column-gap: auto;
+  grid-template-columns: auto auto auto auto auto;
+    justify-content: space-between;
+}
+
+.card {
+    background-color: white;
+    padding: 30px 24px;
+    margin: 16px 16px;
+    /* border: 1px solid black; */
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 4px 4px 16px grey;
+    transition: transform .2s;
+}
+
+.icon {
+    margin-bottom: 16px;
+}
+
+.card:hover {
+    -ms-transform: scale(1.5); /* IE 9 */
+    -webkit-transform: scale(1.5); /* Safari 3-8 */
+    transform: scale(1.1); 
+}

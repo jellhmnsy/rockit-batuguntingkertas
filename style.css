@@ -1,0 +1,54 @@
+table, th, td {
+    border:1px solid black;
+  }
+  ol {
+   margin: 0px;
+   padding-left: 20px;
+  }
+  .container-input {
+      display: block;
+  }
+  .latihan {
+      border-radius: 8px;
+      background-color: lightgrey;
+      margin: 10px;
+      padding: 10px;
+  }
+  .latihan-2 {
+      padding: 10px;
+  }
+  .container-main {
+      margin: 8px;
+      padding: 8px;
+  }
+  .container-box {
+      padding: 10px;
+  }
+
+  .class-parent{
+    display:flex;
+    justify-content: space-between;
+  }
+
+.card {
+    padding: 10px;
+    background-color: lightgrey;
+    border: 1px solid black;
+    border-radius: 8px;
+    border
+}
+.card p{
+    text-align: center;
+    color: magenta;
+}
+
+.card h3{
+    text-align: center;
+    color: red;
+}
+
+.card:hover {
+    -ms-transform: scale(1.5); /* IE 9 */
+    -webkit-transform: scale(1.5); /* Safari 3-8 */
+    transform: scale(1.5);
+  }
