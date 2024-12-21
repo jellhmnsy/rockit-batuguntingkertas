@@ -10,6 +10,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/kavoon": "^0.2.3",
+    "@expo-google-fonts/kiwi-maru": "^0.2.3",
     "@expo/metro-runtime": "~4.0.0",
     "@react-navigation/elements": "^2.2.5",
     "@react-navigation/native": "^7.0.14",
