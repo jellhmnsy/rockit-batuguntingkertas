@@ -12,10 +12,9 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
 <View> 
-
 <ImageBackground source={require("../assets/registration-screen.png")} // Ganti dengan path gambar cloud Anda
     style={styles.background}
-    resizeMode="stretch"> 
+    resizeMode="stretch"/>
     <View style={styles.container}>
       {/* Cloud Decoration */}
       
@@ -73,7 +72,6 @@ const RegisterScreen = ({ navigation }) => {
       </View>
     </View>
     </View>
-    </ImageBackground>
   );
 };
 
