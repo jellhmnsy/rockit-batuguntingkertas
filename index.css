@@ -1,10 +1,13 @@
+/* Card */
 .container {
     background-color: aquamarine;
     padding: 40px;
     display: grid;
     column-gap: auto;
-  grid-template-columns: auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto;
     justify-content: space-between;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
 }
 
 .card {
@@ -29,6 +32,51 @@
 }
 
 body{
+
+}
+
+/* Biodata */
+
+.main {
+    display: flex;
+}
+
+.photo {
+    width: 200px;
+    height: 200px;
+}
+
+.name p {
+    font-size: 44px;
+    font-weight: 700px;
+    margin: 12px 0px;
     font-family: 'Lato', sans-serif;
-    font-weight: 400;
+    font-weight: 700;
+}
+
+.profesi p {
+    font-size: 44px;
+    font-weight: 600px;
+    margin: 12px 0px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+}
+
+.photo img {
+    border-radius: 999px;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.content-1 {
+    display: grid;
+    column-gap: auto;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+.content-1 {
+    
 }
