@@ -1,22 +1,50 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import SplashScreen from './screens/splashScreen';  // Import SplashScreen
+import LoginScreen from './screens/loginScreen';
+import WaitingRoom from './screens/waitingRoomScreen';
+import GameplayScreen from './screens/gameplay_screen';
+import GameplayScreenBot from './screens/gameplay_bot_screen';
 
-export default function App() {
+const Stack = createNativeStackNavigator();
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <Text>Tes commit masuk ga</Text>
-      <Text>Tes commit lagi masuk ga</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {/* Splash screen is the first screen */}
+        <Stack.Screen
+          name="Splash"
+          component={SplashScreen}
+          options={{ headerShown: false }} // Hide header for SplashScreen
+        />
+        {/* Login screen */}
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
+        {/* waiting room screen */}
+        <Stack.Screen
+          name="WaitingRoom"
+          component={WaitingRoom}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
+        {/* game play bot */}
+        <Stack.Screen
+          name="GamePlayBot"
+          component={GameplayScreenBot}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
+        {/* game play */}
+        <Stack.Screen
+          name="GamePlay"
+          component={GameplayScreen}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
