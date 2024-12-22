@@ -103,16 +103,16 @@ const GameplayScreenBot = ({ navigation }) => {
     setTimer(5);
   };
 
-  const resetGame = () => {
-    setScoreA(0);
-    setScoreB(0);
-    setPlayerChoice(null);
-    setHandLeft(null);
-    setShowHands(false);
-    setTimer(5);
-    setGameOver(false); // Sembunyikan layar Game Over
-    setShowModal(false); // Sembunyikan modal
-  };
+//   const resetGame = () => {
+//     setScoreA(0);
+//     setScoreB(0);
+//     setPlayerChoice(null);
+//     setHandLeft(null);
+//     setShowHands(false);
+//     setTimer(5);
+//     setGameOver(false); // Sembunyikan layar Game Over
+//     setShowModal(false); // Sembunyikan modal
+//   };
 
   const handleChoice = (choice) => {
     if (!showHands && timer > 0) {
@@ -120,17 +120,14 @@ const GameplayScreenBot = ({ navigation }) => {
     }
   };
 
-  const goToMenu = () => {
-    navigation.navigate("Menu"); // Arahkan ke layar Menu utama
-  };
-
-  const goToLeaderboard = () => {
-    navigation.navigate("Leaderboard"); // Arahkan ke layar Leaderboard
-  };
-
-  const goToPostGame = () => {
-    navigation.navigate("PostGame");
-  }
+useEffect(() => {
+    if (gameOver) {
+      navigation.navigate('PostGame', {
+        scoreA,
+        scoreB,
+      });
+    }
+  }, [gameOver]); 
 
   const [fontsLoaded] = useFonts({
     Kavoon_400Regular,
@@ -147,140 +144,104 @@ const GameplayScreenBot = ({ navigation }) => {
       style={styles.background}
       resizeMode="stretch"
     >
-       
       <View style={styles.container}>
-        {gameOver ? (
-            
-          // Layar Game Over
-          <View style={styles.gameOverContainer}>
-            <Text style={styles.gameOverText}>
-              {scoreA === 3 ? "You Win!" : "You Lose!"}
-            </Text>
-            {/* Score */}
-            <View style={styles.scoreContainer}>
-              <Text style={styles.scoreTitle}>A vs B</Text>
-              <View style={styles.scores}>
-                <View style={styles.scoreBox}>
-                  <Text style={styles.scoreText}>{scoreA}</Text>
-                </View>
-                <View style={styles.scoreBox}>
-                  <Text style={styles.scoreText}>{scoreB}</Text>
-                </View>
+        <>
+          {timer > 0 && (
+            <View style={styles.overlay}>
+              <Text style={styles.timerText}>{timer}</Text>
+            </View>
+          )}
+
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.lifeText}>Life</Text>
+          </View>
+
+          {/* Score */}
+          <View style={styles.scoreContainer}>
+            <Text style={styles.scoreTitle}>A vs B</Text>
+            <View style={styles.scores}>
+              <View style={styles.scoreBox}>
+                <Text style={styles.scoreText}>{scoreA}</Text>
+              </View>
+              <View style={styles.scoreBox}>
+                <Text style={styles.scoreText}>{scoreB}</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.buttonGameOver} onPress={resetGame}>
-              <Text style={styles.buttonTextGameOver}>Play Again</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonGameOver} onPress={goToMenu}>
-              <Text style={styles.buttonTextGameOver}>Menu</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.buttonGameOver}
-              onPress={goToLeaderboard}
-            >
-              <Text style={styles.buttonTextGameOver}>Leaderboard</Text>
-            </TouchableOpacity>
-            </View>
-        ) : (
-          // Layar Gameplay
-          <>
-            {timer > 0 && (
-              <View style={styles.overlay}>
-                <Text style={styles.timerText}>{timer}</Text>
-              </View>
-            )}
+          </View>
 
-            {/* Header */}
-            <View style={styles.header}>
-              <Text style={styles.lifeText}>Life</Text>
-            </View>
+          {/* Render Hand */}
+          {showHands && handLeft === "rock" && (
+            <Image
+              source={require("../assets/gamehand_rock.png")}
+              style={styles.handLeftRock}
+            />
+          )}
+          {showHands && handLeft === "paper" && (
+            <Image
+              source={require("../assets/gamehand_paper.png")}
+              style={styles.handLeftPaper}
+            />
+          )}
+          {showHands && handLeft === "scissors" && (
+            <Image
+              source={require("../assets/gamehand_scissors.png")}
+              style={styles.handLeftScissors}
+            />
+          )}
 
-            {/* Score */}
-            <View style={styles.scoreContainer}>
-              <Text style={styles.scoreTitle}>A vs B</Text>
-              <View style={styles.scores}>
-                <View style={styles.scoreBox}>
-                  <Text style={styles.scoreText}>{scoreA}</Text>
-                </View>
-                <View style={styles.scoreBox}>
-                  <Text style={styles.scoreText}>{scoreB}</Text>
-                </View>
-              </View>
-            </View>
-
-            {/* Render Hand */}
-            {showHands && handLeft === "rock" && (
-              <Image
-                source={require("../assets/gamehand_rock.png")}
-                style={styles.handLeftRock}
-              />
-            )}
-            {showHands && handLeft === "paper" && (
-              <Image
-                source={require("../assets/gamehand_paper.png")}
-                style={styles.handLeftPaper}
-              />
-            )}
-            {showHands && handLeft === "scissors" && (
+          <View style={styles.handsContainer}>
+            {showHands && playerChoice === "scissors" && (
               <Image
                 source={require("../assets/gamehand_scissors.png")}
-                style={styles.handLeftScissors}
+                style={styles.handRightScissors}
               />
             )}
+            {showHands && playerChoice === "rock" && (
+              <Image
+                source={require("../assets/gamehand_rock.png")}
+                style={styles.handRightRock}
+              />
+            )}
+            {showHands && playerChoice === "paper" && (
+              <Image
+                source={require("../assets/gamehand_paper.png")}
+                style={styles.handRightPaper}
+              />
+            )}
+          </View>
 
-            <View style={styles.handsContainer}>
-              {showHands && playerChoice === "scissors" && (
-                <Image
-                  source={require("../assets/gamehand_scissors.png")}
-                  style={styles.handRightScissors}
-                />
-              )}
-              {showHands && playerChoice === "rock" && (
-                <Image
-                  source={require("../assets/gamehand_rock.png")}
-                  style={styles.handRightRock}
-                />
-              )}
-              {showHands && playerChoice === "paper" && (
-                <Image
-                  source={require("../assets/gamehand_paper.png")}
-                  style={styles.handRightPaper}
-                />
-              )}
-            </View>
-
-            {/* Buttons */}
-            <View style={styles.buttonsContainer}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => handleChoice("scissors")}
-              >
-                <Image
-                  source={require("../assets/scissors-hand.png")}
-                  style={styles.buttonIconHand}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => handleChoice("rock")}
-              >
-                <Image
-                  source={require("../assets/rock-hand.png")}
-                  style={styles.buttonIconRock}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => handleChoice("paper")}
-              >
-                <Image
-                  source={require("../assets/paper-hand.png")}
-                  style={styles.buttonIconPaper}
-                />
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
+          {/* Buttons */}
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleChoice("scissors")}
+            >
+              <Image
+                source={require("../assets/scissors-hand.png")}
+                style={styles.buttonIconHand}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleChoice("rock")}
+            >
+              <Image
+                source={require("../assets/rock-hand.png")}
+                style={styles.buttonIconRock}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleChoice("paper")}
+            >
+              <Image
+                source={require("../assets/paper-hand.png")}
+                style={styles.buttonIconPaper}
+              />
+            </TouchableOpacity>
+          </View>
+        </>
       </View>
 
       {/* Modal Hasil */}
@@ -344,9 +305,7 @@ const styles = StyleSheet.create({
     justifyContent: "center", // Pusatkan konten secara vertikal
     alignItems: "center", // Pusatkan konten secara horizontal
   },
-  backgroundGameOver: {
-
-  },
+  backgroundGameOver: {},
   overlay: {
     position: "absolute",
     top: 0,
