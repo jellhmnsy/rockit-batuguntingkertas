@@ -8,12 +8,8 @@ import {
   ImageBackground,
 } from "react-native";
 import { useFonts } from "@expo-google-fonts/kavoon";
-import { Kavoon_400Regular } from '@expo-google-fonts/kavoon';
-import {
-  KiwiMaru_300Light,
-  KiwiMaru_400Regular,
-  KiwiMaru_500Medium,
-} from '@expo-google-fonts/kiwi-maru';
+import { Kavoon_400Regular } from "@expo-google-fonts/kavoon";
+import { KiwiMaru_400Regular } from "@expo-google-fonts/kiwi-maru";
 
 const GameplayScreen = () => {
   const [scoreA, setScoreA] = useState(0);
@@ -23,10 +19,9 @@ const GameplayScreen = () => {
   const [showHands, setShowHands] = useState(false); // Tampilkan pilihan setelah timer habis
   const timerRef = useRef(null);
   const [handLeft, setHandLeft] = useState(null); // State untuk hand dari API
-  const [gameOver, setGameOver] = useState(false); // State untuk game over
-  const [resultMessage, setResultMessage] = useState(""); // Pesan hasil akhir
-  const [showModal, setShowModal] = useState(false); // Tambahkan state untuk modal
-  const [roundResult, setRoundResult] = useState(""); // Untuk menentukan hasil ronde
+
+    const [gameOver, setGameOver] = useState(false); // State untuk game over
+    const [resultMessage, setResultMessage] = useState(""); // Pesan hasil akhir
   
   
   useEffect(() => {
@@ -65,72 +60,46 @@ const GameplayScreen = () => {
   useEffect(() => {
     if (showHands && playerChoice && handLeft) {
       const result = determineWinner(playerChoice, handLeft);
-      setRoundResult(result); // Set hasil ronde
-  
       if (result === "win") {
         setScoreA((prevScore) => prevScore + 1);
       } else if (result === "lose") {
         setScoreB((prevScore) => prevScore + 1);
       }
-  
-      // Tampilkan modal dengan hasil hanya jika permainan belum berakhir
-      if (!gameOver) {
-        setShowModal(true);
-      }
-  
-      // Close modal automatically after 2 seconds
-      setTimeout(() => {
-        setShowModal(false);
-      }, 2000);
-  
-      // Mulai ronde baru atau tampilkan layar Game Over
-      setTimeout(() => {
-        if (scoreA === 2 || scoreB === 2) {
-          setGameOver(true); // Tampilkan layar Game Over
-          setShowModal(false); // Pastikan modal ditutup saat game over
-        } else {
-          startNewRound(); // Reset untuk ronde berikutnya
-        }
-      }, 2000);
     }
   }, [showHands, playerChoice, handLeft]);
 
   const handleChoice = (choice) => {
-    if (!showHands && timer > 0) {
+    if (!showHands) {
       setPlayerChoice(choice);
     }
   };
 
-  const startNewRound = () => {
+  useEffect(() => {
+    if (scoreA === 3 || scoreB === 3) { // Kondisi akhir permainan
+      setGameOver(true);
+      if (scoreA > scoreB) setResultMessage("YOU WIN!");
+      else setResultMessage("YOU LOSE!");
+    }
+  }, [scoreA, scoreB]);
+
+  const handleRestart = () => {
     setPlayerChoice(null);
-    setHandLeft(null);
+    setHandLeft(null); // Reset hand left
     setShowHands(false);
     setTimer(5);
-  };
-
-  const resetGame = () => {
     setScoreA(0);
     setScoreB(0);
-    setPlayerChoice(null);
-    setHandLeft(null);
-    setShowHands(false);
-    setTimer(5);
-    setGameOver(false); // Sembunyikan layar Game Over
-    setShowModal(false); // Sembunyikan modal
-  };
-
-  const goToMenu = () => {
-    navigation.navigate("Menu"); // Arahkan ke layar Menu utama
-  };
-
-  const goToLeaderboard = () => {
-    navigation.navigate("Leaderboard"); // Arahkan ke layar Leaderboard
+    setGameOver(false);
   };
 
   const [fontsLoaded] = useFonts({
     Kavoon_400Regular,
     KiwiMaru_400Regular,
   });
+
+  if (!fontsLoaded) {
+    return <Text>Loading fonts...</Text>;
+  }
 
 
   return (
@@ -266,30 +235,6 @@ const GameplayScreen = () => {
         </View>
       )
       }
-      {/* Modal Hasil */}
-            <Modal
-              visible={showModal}
-              transparent={true}
-              animationType="fade"
-              onRequestClose={() => setShowModal(false)} // Menutup modal saat ditekan
-            >
-              <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalText}>
-            {roundResult === "lose" ? "YOU LOSE!" : roundResult === "win" ? "YOU WIN!" : "IT'S A DRAW!"}
-          </Text>
-      
-          {/* Menampilkan subtext berdasarkan hasil */}
-          <Text style={styles.modalSubText}>
-            {roundResult === "win"
-              ? "Good job"
-              : roundResult === "draw"
-              ? "Try again"
-              : "Keep going"}
-          </Text>
-        </View>
-      </View>
-            </Modal>
     </ImageBackground>
   );
 };
@@ -461,38 +406,6 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
-  },
-  modalContent: {
-    width: 331, // Diameter of the circle
-    height: 259,
-    backgroundColor: "#fff",
-    borderRadius: 125, // Half of the diameter
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  modalText: {
-    fontSize: 32,
-    color: "#046865",
-    fontFamily: "Kavoon_400Regular",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  modalSubText: {
-    fontSize: 18,
-    color: "#046865",
-    fontFamily: "KiwiMaru_400Regular",
-    textAlign: "center",
-  }, 
 });
 
 export default GameplayScreen;

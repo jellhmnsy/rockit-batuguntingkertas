@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import AppLoading from 'expo-app-loading';
+// import AppLoading from 'expo-app-loading';
 import { Kavoon_400Regular } from '@expo-google-fonts/kavoon';
 import {
   KiwiMaru_300Light,
@@ -20,7 +20,7 @@ import {
   KiwiMaru_500Medium,
 } from '@expo-google-fonts/kiwi-maru';
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [pin, setPin] = useState('');
 
@@ -42,7 +42,7 @@ const LoginScreen = () => {
   };
 
   const handleRegisterRedirect = () => {
-    Alert.alert('Redirect', 'Go to Register screen!');
+    navigation.navigate('Register');
   };
 
   const [fontsLoaded] = useFonts({

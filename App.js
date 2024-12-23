@@ -1,10 +1,12 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
-import SplashScreen from './screens/splashScreen';  // Import SplashScreen
-import LoginScreen from './screens/loginScreen';
-import WaitingRoom from './screens/waitingRoomScreen';
-import GameplayScreen from './screens/gameplay_screen';
-import GameplayScreenBot from './screens/gameplay_bot_screen';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import SplashScreen from "./screens/splashScreen"; // Import SplashScreen
+import LoginScreen from "./screens/loginScreen";
+import WaitingRoom from "./screens/waitingRoomScreen";
+import GameplayScreen from "./screens/gameplay_screen";
+import GameplayScreenBot from "./screens/gameplay_bot_screen";
+import PostGameScreen from "./screens/post_gameplay_bot_screen";
+import RegisterScreen from "./screens/register_screen"
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +26,11 @@ const App = () => {
           component={LoginScreen}
           options={{ headerShown: false }} // Hide header for LoginScreen
         />
+         <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
         {/* waiting room screen */}
         <Stack.Screen
           name="WaitingRoom"
@@ -40,6 +47,11 @@ const App = () => {
         <Stack.Screen
           name="GamePlay"
           component={GameplayScreen}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
+        <Stack.Screen
+          name="PostGame"
+          component={PostGameScreen}
           options={{ headerShown: false }} // Hide header for LoginScreen
         />
       </Stack.Navigator>
