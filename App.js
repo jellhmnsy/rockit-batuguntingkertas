@@ -2,8 +2,16 @@ import PostGameScreen from './screen/post_gameplay_bot_screen';
 import GameplayScreenBot from './screen/gameplay_bot_screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Text } from 'react-native';
 
 const Stack = createStackNavigator();
+
+//Font
+import { useFonts } from 'expo-font';
+import { Kavoon_400Regular } from '@expo-google-fonts/kavoon';
+import { KiwiMaru_300Light } from '@expo-google-fonts/kiwi-maru';
+import { KiwiMaru_400Regular } from '@expo-google-fonts/kiwi-maru';
+import { KiwiMaru_500Medium } from '@expo-google-fonts/kiwi-maru';
 
 export default function App() {
   //Font
@@ -19,19 +27,11 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <Text>Tes commit masuk ga</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Game">
+        <Stack.Screen name="Game" component={GameplayScreenBot} options={{headerShown: false}} />
+        <Stack.Screen name="PostGame" component={PostGameScreen} options={{headerShown: false}} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
