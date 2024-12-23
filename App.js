@@ -1,37 +1,50 @@
-import PostGameScreen from './screen/post_gameplay_bot_screen';
-import GameplayScreenBot from './screen/gameplay_bot_screen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Text } from 'react-native';
+import SplashScreen from './screens/splashScreen';  // Import SplashScreen
+import LoginScreen from './screens/loginScreen';
+import WaitingRoom from './screens/waitingRoomScreen';
+import GameplayScreen from './screens/gameplay_screen';
+import GameplayScreenBot from './screens/gameplay_bot_screen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
-//Font
-import { useFonts } from 'expo-font';
-import { Kavoon_400Regular } from '@expo-google-fonts/kavoon';
-import { KiwiMaru_300Light } from '@expo-google-fonts/kiwi-maru';
-import { KiwiMaru_400Regular } from '@expo-google-fonts/kiwi-maru';
-import { KiwiMaru_500Medium } from '@expo-google-fonts/kiwi-maru';
-
-export default function App() {
-  //Font
-  const [fontsLoaded] = useFonts({
-    Kavoon_400Regular,
-    KiwiMaru_300Light,
-    KiwiMaru_400Regular,
-    KiwiMaru_500Medium
-  })
-
-  if (!fontsLoaded) {
-    return <Text>Loading...</Text>;
-  }
-
+const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Game">
-        <Stack.Screen name="Game" component={GameplayScreenBot} options={{headerShown: false}} />
-        <Stack.Screen name="PostGame" component={PostGameScreen} options={{headerShown: false}} />
+      <Stack.Navigator>
+        {/* Splash screen is the first screen */}
+        <Stack.Screen
+          name="Splash"
+          component={SplashScreen}
+          options={{ headerShown: false }} // Hide header for SplashScreen
+        />
+        {/* Login screen */}
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
+        {/* waiting room screen */}
+        <Stack.Screen
+          name="WaitingRoom"
+          component={WaitingRoom}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
+        {/* game play bot */}
+        <Stack.Screen
+          name="GamePlayBot"
+          component={GameplayScreenBot}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
+        {/* game play */}
+        <Stack.Screen
+          name="GamePlay"
+          component={GameplayScreen}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
+
+export default App;
