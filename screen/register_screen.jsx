@@ -9,15 +9,28 @@ import {
   ImageBackground,
   SafeAreaView,
 } from "react-native";
+import { Kavoon_400Regular } from "@expo-google-fonts/kavoon";
+import { KiwiMaru_400Regular } from "@expo-google-fonts/kiwi-maru";
+import { useFonts } from "@expo-google-fonts/kavoon";
+
 
 const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [pin, setPin] = useState("");
 
   const handleRegister = () => {
     // Logika untuk registrasi
-    console.log("Register with:", { username, password });
+    console.log("Register with:", { username, pin });
   };
+
+  const [fontsLoaded] = useFonts({
+    Kavoon_400Regular,
+    KiwiMaru_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return <Text>Loading fonts...</Text>;
+  }
 
   return (
       <ImageBackground
@@ -46,14 +59,14 @@ const RegisterScreen = ({ navigation }) => {
               onChangeText={setUsername}
             />
 
-            {/* Input Password */}
+            {/* Input pin */}
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder="Pin"
               placeholderTextColor="#8c8c8c"
               secureTextEntry
-              value={password}
-              onChangeText={setPassword}
+              value={pin}
+              onChangeText={setPin}
             />
 
             {/* Tombol Register */}
@@ -90,7 +103,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
   marginTop: "30%",
-  backgroundColor: "rgba(255, 255, 255, 0.5)", // Gunakan warna RGBA untuk opacity 50%
+  backgroundColor: "rgba(255, 255, 255, 0.41)", // Gunakan warna RGBA untuk opacity 50%
   borderRadius: 20,
   paddingVertical: 20,
   paddingHorizontal: 30,
@@ -119,11 +132,11 @@ formContainer: {
     alignItems: "center",
   },
   title: {
-    fontSize: 24,
+    fontFamily: "Kavoon_400Regular",
+    fontSize: 40,
     fontWeight: "bold",
     color: "#000",
-    marginBottom: 20,
-    fontFamily: "Caveat-Bold", // Gunakan font sesuai gambar
+    marginBottom: 20, // Gunakan font sesuai gambar
   },
   logo: {
     width: 60,
@@ -134,9 +147,13 @@ formContainer: {
   input: {
     width: "100%",
     backgroundColor: "#F2F2F2",
-    padding: 15,
+    paddingHorizontal: 15,
+    height: 39,
+    width : 250,
     marginBottom: 15,
     color: "#000",
+    fontFamily: "KiwiMaru_400Regular",
+    fontSize: 20,
   },
   registerButton: {
     backgroundColor: "#FF8552",
@@ -150,15 +167,20 @@ formContainer: {
   registerButtonText: {
     color: "#FFFFFF",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 24,
+    fontFamily: "KiwiMaru_400Regular",
   },
   loginText: {
     marginTop: 20,
+    fontSize: 15,
     color: "#000",
+    fontFamily: "KiwiMaru_400Regular",
   },
   loginLink: {
-    color: "#50C2D6",
+    color: "#046865",
+    fontSize: 15,
     fontWeight: "bold",
+    fontFamily: "KiwiMaru_400Regular",
   },
 });
 

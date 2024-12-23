@@ -1,12 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import PostGameScreen from './screen/post_gameplay_bot_screen';
+import GameplayScreenBot from './screen/gameplay_bot_screen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-//Font
-import { useFonts } from 'expo-font';
-import { Kavoon_400Regular } from '@expo-google-fonts/kavoon';
-import { KiwiMaru_300Light } from '@expo-google-fonts/kiwi-maru';
-import { KiwiMaru_400Regular } from '@expo-google-fonts/kiwi-maru';
-import { KiwiMaru_500Medium } from '@expo-google-fonts/kiwi-maru';
+const Stack = createStackNavigator();
 
 export default function App() {
   //Font
@@ -24,8 +21,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
-      <Text style={styles.kavoon}>Tes commit masuk ga</Text>
-      <Text>Tes commit lagi masuk ga</Text>
+      <Text>Tes commit masuk ga</Text>
       <StatusBar style="auto" />
     </View>
   );
@@ -38,7 +34,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  kavoon: {
-    fontFamily: 'Kavoon_400Regular'
-  }
 });
