@@ -3,10 +3,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import SplashScreen from "./screens/splashScreen"; // Import SplashScreen
 import LoginScreen from "./screens/loginScreen";
 import WaitingRoom from "./screens/waitingRoomScreen";
-import GameplayScreen from "./screens/gameplay_screen";
-import GameplayScreenBot from "./screens/gameplay_bot_screen";
-import PostGameScreen from "./screens/post_gameplay_bot_screen";
-import RegisterScreen from "./screens/register_screen"
+import GameplayScreen from "./screens/gameplayScreen";
+import GameplayScreenBot from "./screens/gameplayBotScreen";
+import PostGameScreen from "./screens/postGameplayBotScreen";
+import RegisterScreen from "./screens/registerScreen"
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +31,9 @@ const App = () => {
           component={RegisterScreen}
           options={{ headerShown: false }} // Hide header for LoginScreen
         />
+      
+
+
         {/* waiting room screen */}
         <Stack.Screen
           name="WaitingRoom"

@@ -61,22 +61,22 @@ const GameplayScreenBot = ({ navigation }) => {
 
   useEffect(() => {
     if (showHands && playerChoice && handLeft && !gameOver) {
-      const result = determineWinner(playerChoice, handLeft); // Tentukan hasil ronde
-      setRoundResult(result); // Simpan hasil ronde di state
+      const result = determineWinner(playerChoice, handLeft); 
+      setRoundResult(result); 
 
-      // Perbarui skor berdasarkan hasil ronde
+
       if (result === "win") {
         setScoreA((prevScore) => prevScore + 1);
       } else if (result === "lose") {
         setScoreB((prevScore) => prevScore + 1);
       }
 
-      // Tampilkan modal untuk hasil ronde
+
       setTimeout(() => {
         setShowModal(true);
       }, 1000);
 
-      // Tutup modal setelah 2 detik dan cek apakah game selesai
+
       const timeout = setTimeout(() => {
         setShowModal(false);
 
@@ -92,9 +92,9 @@ const GameplayScreenBot = ({ navigation }) => {
         }
       }, 2000);
 
-      return () => clearTimeout(timeout); // Bersihkan timeout saat komponen diperbarui
+      return () => clearTimeout(timeout); // clear timeout saat komponen diperbarui
     }
-  }, [showHands, playerChoice, handLeft, gameOver]); // Tambahkan gameOver ke dalam dependensi
+  }, [showHands, playerChoice, handLeft, gameOver]); 
 
   const startNewRound = () => {
     setPlayerChoice(null);
@@ -249,7 +249,7 @@ useEffect(() => {
         visible={showModal}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setShowModal(false)} // Menutup modal saat ditekan
+        onRequestClose={() => setShowModal(false)} 
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -302,8 +302,8 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-    justifyContent: "center", // Pusatkan konten secara vertikal
-    alignItems: "center", // Pusatkan konten secara horizontal
+    justifyContent: "center", 
+    alignItems: "center", 
   },
   backgroundGameOver: {},
   overlay: {
@@ -312,10 +312,10 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(255, 255, 255, 0.65)", // Background semi-transparan
+    backgroundColor: "rgba(255, 255, 255, 0.65)", 
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 5, // Pastikan di atas elemen lain
+    zIndex: 5, 
   },
   container: {
     flex: 1,
@@ -440,11 +440,11 @@ const styles = StyleSheet.create({
     fontFamily: "Kavoon_400Regular",
   },
   buttonsContainer: {
-    flexDirection: "row", // Atur elemen sejajar secara horizontal
-    justifyContent: "space-between", // Berikan jarak di antara elemen
-    alignItems: "center", // Pusatkan elemen secara vertikal
-    width: "80%", // Sesuaikan lebar container
-    alignSelf: "center", // Pusatkan container
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    alignItems: "center", 
+    width: "80%", 
+    alignSelf: "center", 
     marginBottom: 40,
   },
   button: {
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 10,
-    zIndex: 10, // Overlay di atas layar, tapi di bawah tombol
+    zIndex: 10, 
   },
   buttonIconHand: {
     width: 50.36,
@@ -474,13 +474,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+    backgroundColor: "rgba(0, 0, 0, 0.5)", 
   },
   modalContent: {
-    width: 331, // Diameter of the circle
+    width: 331, 
     height: 259,
     backgroundColor: "#fff",
-    borderRadius: 125, // Half of the diameter
+    borderRadius: 125, 
     alignItems: "center",
     justifyContent: "center",
     elevation: 5,

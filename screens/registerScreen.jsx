@@ -18,6 +18,9 @@ const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [pin, setPin] = useState("");
 
+  //tambahin validate
+  //ada package buat si expo nerima input number doang
+
   const handleRegister = () => {
     // Logika untuk registrasi
     console.log("Register with:", { username, pin });
