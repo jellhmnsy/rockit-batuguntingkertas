@@ -7,6 +7,7 @@ import GameplayScreen from "./screens/gameplayScreen";
 import GameplayScreenBot from "./screens/gameplayBotScreen";
 import PostGameScreen from "./screens/postGameplayBotScreen";
 import RegisterScreen from "./screens/registerScreen"
+import HomeScreen from "./screens/homeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,13 +16,13 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator>
         {/* Splash screen is the first screen */}
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Splash"
           component={SplashScreen}
           options={{ headerShown: false }} // Hide header for SplashScreen
-        />
+        /> */}
         {/* Login screen */}
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Login"
           component={LoginScreen}
           options={{ headerShown: false }} // Hide header for LoginScreen
@@ -29,6 +30,12 @@ const App = () => {
          <Stack.Screen
           name="Register"
           component={RegisterScreen}
+          options={{ headerShown: false }} // Hide header for LoginScreen
+        /> */}
+         
+         <Stack.Screen
+          name="Home"
+          component={HomeScreen}
           options={{ headerShown: false }} // Hide header for LoginScreen
         />
       

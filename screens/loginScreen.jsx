@@ -27,7 +27,7 @@ const LoginScreen = ({navigation}) => {
   const handleLogin = () => {
     if (!username || !pin) {
       Alert.alert('Error', 'Please enter both username and pin.');
-      return;
+      navigation.navigate("Home"); //BENERIN INI YA TALLLLLLLLL
     }
 
     // Parse PIN to integer

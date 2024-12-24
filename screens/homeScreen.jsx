@@ -77,7 +77,7 @@ const Pagination = ({ index }) => (
   </View>
 );
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   //Font
   const [fontsLoaded] = useFonts({
     Kavoon_400Regular,
@@ -114,6 +114,10 @@ const HomeScreen = () => {
     setIsModalVisible('leaderboard', true);
   }
 
+  const handleSolo = () => {
+    navigation.navigate("GamePlayBot");
+  }
+
   const handleCloseModal = () => {
     setIsModalVisible(false);
     setToken('');
@@ -129,6 +133,10 @@ const HomeScreen = () => {
     // Handle token submission logic here (e.g., send to server)
     console.log('Submitted Token:', token);
     handleCloseModal();
+  };
+
+  const handleCreate = () => {
+navigation.navigate('WaitingRoom')
   };
 
   // Data untuk tabel
@@ -174,7 +182,7 @@ const HomeScreen = () => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonWrapper}>
+        <TouchableOpacity style={styles.buttonWrapper} onPress = {handleSolo}>
           <View style={styles.imageContainer}>
             <Image source={require('../assets/icon/home/boy.png')} style={styles.image} />
           </View>
@@ -234,7 +242,9 @@ const HomeScreen = () => {
           <TouchableWithoutFeedback>
             <View style={styles.coba}>
               <View style={styles.coba1}>
+                <TouchableOpacity onPress={handleCreate}>
                 <Text style={styles.modalTitle1}>Create Room</Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.coba2}>
                 <Text style={styles.modalTitle}>Join Room</Text>
