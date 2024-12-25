@@ -15,6 +15,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { TouchableWithoutFeedback } from 'react-native-web';
 import { useGame } from '../contexts/GameContext';
+import { useAuth } from '../contexts/AuthContext';
+import { getUserInfo } from '../api/restApi';
 
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
@@ -78,10 +80,7 @@ const Pagination = ({ index }) => (
   </View>
 );
 
-const handleLogout = (navigation) => {
-  console.log('User logged out');
-  navigation.navigate('Login');
-};
+
 
 const HomeScreen = ({navigation}) => {
   //Font
@@ -92,6 +91,11 @@ const HomeScreen = ({navigation}) => {
     KiwiMaru_500Medium,
   });
 
+  const [users, setUsers] = useState([]);
+  
+
+
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [token, setToken] = useState('');
   const [index, setIndex] = useState(0);
@@ -99,10 +103,32 @@ const HomeScreen = ({navigation}) => {
 
   const { joinGame, token:gameToken, resetGameToken } = useGame();
 
+  const {userId,logout,user,setUserId} = useAuth()
+  useEffect(() => {
+    getUserData();
+  }, [user]);
+  useEffect(() => {
+    console.log(userId,"gameplay");
+  }, [userId]);
+  const handleLogout = (navigation) => {
+    logout();
+    console.log('User logged out');
+    navigation.navigate('Login');
+  };
   const [icon, setIcon] = useState('volume-high-outline'); // Ikon awal
   const toggleIcon = () => {
     setIcon(icon === 'volume-high-outline' ? 'volume-mute-outline' : 'volume-high-outline'); // Toggle ikon
   };
+  const getUserData = async () => {
+    try {
+      const response = await getUserInfo();
+      setUserId(response.id);
+      setUsers(response);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const onScroll = useCallback((event) => {
     const slideSize = event.nativeEvent.layoutMeasurement.width;
@@ -140,6 +166,10 @@ const HomeScreen = ({navigation}) => {
 
     try {
       const response = await joinGame(token);
+      console.log(response,'join')
+      if (response.success ) {
+        navigation.navigate('WaitingRoom');
+      }
     
     } catch (error) {
       console.log(error);
@@ -150,17 +180,13 @@ const HomeScreen = ({navigation}) => {
     handleCloseModal();
   };
 
-  useEffect(() => {
-    if (gameToken) {
-      navigation.navigate('WaitingRoom');
-    }
-  }, [gameToken]);
 
   useEffect(() => {
     resetGameToken();
   },[]);
 
   const handleCreate = () => {
+    resetGameToken();
 navigation.navigate('WaitingRoom')
   };
 
@@ -194,7 +220,7 @@ navigation.navigate('WaitingRoom')
       </TouchableOpacity>
 
       <View style={styles.headerWrapper}>
-        <Text style={styles.title}>Halo, RockiT</Text>
+        <Text style={styles.title}>Halo, {users.username}</Text>
         <Text style={styles.subtitle}>Welcome to RockiT Game</Text>
       </View>
 

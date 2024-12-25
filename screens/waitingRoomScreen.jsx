@@ -15,12 +15,18 @@ import {
   KiwiMaru_500Medium,
 } from '@expo-google-fonts/kiwi-maru';
 import { useGame } from '../contexts/GameContext';
+import { useNavigation } from '@react-navigation/native';
 
 const WaitingRoom = () => {
-  const {getToken,token,playersJoined} = useGame();
+  const {getToken,token,playersJoined,status,startGame} = useGame();
   const [gameCreator, setgameCreator] = useState(false);
+  const navigation = useNavigation();
   const totalPlayers = 2;
-
+  useEffect(() => {
+    if (status === 'Started') {
+      navigation.navigate('GamePlay');
+    }
+  },[status])
   useEffect(() => {
     // Simulate fetching token from API or backend
     if (!token) {
@@ -33,7 +39,7 @@ const WaitingRoom = () => {
     if (playersJoined < totalPlayers) {
       Alert.alert('Waiting', 'Not enough players to start the game.');
     } else {
-      Alert.alert('Game Started', 'Good luck!');
+      startGame();
     }
   };
 

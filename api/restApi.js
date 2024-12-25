@@ -11,6 +11,8 @@ const api = axios.create({
   }
 });
 
+
+
 export const login = async (username, pin) => {
   try {
     const response = await api.post('/auth/login', { 
@@ -34,6 +36,21 @@ export const register = async (username, pin) => {
     throw new Error(error.response?.data?.message);
   }
 };
+
+export const getUserInfo = async () => {
+  try{
+    const accessToken = await AsyncStorage.getItem('accessToken')
+    const response = await api.get('/users/me', { 
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken
+      }
+     });
+    return response.data; 
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to get user info');
+  }
+}
 
 export const getGameToken = async () => {
   try {
@@ -65,6 +82,72 @@ export const postJoinGame = async (token) => {
     throw new Error(error.response?.data?.error || 'Failed to get game token');
   }
 };
+
+export const postStartGame = async (token) => {
+  try {
+    const accessToken = await AsyncStorage.getItem('accessToken')
+    const response = await api.post(`/games/${token}/start`,{}, { 
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken
+      }
+     });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to get game token');
+  }
+}
+
+export const postRoundMove = async (token,round,move) => {
+  try {
+    const accessToken = await AsyncStorage.getItem('accessToken')
+    const response = await api.post(`/matches/${token}/${round}`,{
+      "move": move
+    }, { 
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken
+      }
+     });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to get game token');
+  }
+}
+
+export const postFinishMove = async (token) => {
+  try {
+    console.log(token,"token")
+    const accessToken = await AsyncStorage.getItem('accessToken')
+    console.log(accessToken,"accessToken")
+    const response = await api.get(`/matches/${token}`, { 
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken
+      }
+     });
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to get game token');
+  }
+}
+
+export const postResultGame = async (token,result) => {
+  try {
+    const accessToken = await AsyncStorage.getItem('accessToken')
+    const response = await api.put(`/games/${token}/stop`,{
+      "result": result
+    }, { 
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken
+      }
+     });
+    return response.data;
+  } catch (error) {
+    console.log(error)
+  }
+
+}
 
 
 export default api;

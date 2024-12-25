@@ -10,16 +10,18 @@ import {
 import { useFonts } from "@expo-google-fonts/kavoon";
 import { Kavoon_400Regular } from "@expo-google-fonts/kavoon";
 import { KiwiMaru_400Regular } from "@expo-google-fonts/kiwi-maru";
+import { useGame } from "../contexts/GameContext";
 
 const PostGameScreen = ({ route, navigation }) => {
   const { scoreA, scoreB } = route.params;
-
+  const { resetGameToken} = useGame();
   const [fontsLoaded] = useFonts({
     Kavoon_400Regular,
     KiwiMaru_400Regular,
   });
 
   const handleMenuPress = () => {
+    resetGameToken();
     navigation.navigate("Home"); // Navigate to Home screen
   };
 
