@@ -86,7 +86,7 @@ const GameplayScreenBot = ({ navigation }) => {
 
       setTimeout(() => {
         setShowModal(true);
-      }, 3000);
+      }, 1000);
 
 
       const timeout = setTimeout(() => {
@@ -102,7 +102,7 @@ const GameplayScreenBot = ({ navigation }) => {
           // Mulai ronde baru jika permainan belum selesai
           startNewRound();
         }
-      }, 2000);
+      }, 3000);
 
       return () => clearTimeout(timeout); // clear timeout saat komponen diperbarui
     }
@@ -172,15 +172,29 @@ useEffect(() => {
 
           {/* Score */}
           <View style={styles.scoreContainer}>
-            <Text style={styles.scoreTitle}>
-              {data?.username || "Player"} vs Bot
-            </Text>
-            <View style={styles.scores}>
-              <View style={styles.scoreBox}>
-                <Text style={styles.scoreText}>{scoreA}</Text>
+            <View style={styles.scoreTitle}>
+              <View style={styles.playerContainer}>
+                <Text style={styles.playerText}>
+                  {data?.username || "Player"}
+                </Text>
               </View>
-              <View style={styles.scoreBox}>
-                <Text style={styles.scoreText}>{scoreB}</Text>
+              <View style={styles.vsContainer}>
+                <Text style={styles.vsText}>vs</Text>
+              </View>
+              <View style={styles.botContainer}>
+                <Text style={styles.botText}>Bot</Text>
+              </View>
+            </View>
+            <View style={styles.scores}>
+              <View style={styles.scoreBoxPlayer}>
+                <View  style={styles.scoreBox}>
+                  <Text style={styles.scoreText}>{scoreA}</Text>
+                </View>
+              </View>
+              <View style={styles.scoreBoxBot}>
+                <View style={styles.scoreBox}>
+                  <Text style={styles.scoreText}>{scoreB}</Text>
+                </View>                
               </View>
             </View>
           </View>
@@ -189,19 +203,19 @@ useEffect(() => {
           {showHands && handLeft === "rock" && (
             <Image
               source={require("../assets/gamehand_rock.png")}
-              style={styles.handLeftRock}
+              style={styles.handRightRock}
             />
           )}
           {showHands && handLeft === "paper" && (
             <Image
               source={require("../assets/gamehand_paper.png")}
-              style={styles.handLeftPaper}
+              style={styles.handRightPaper}
             />
           )}
           {showHands && handLeft === "scissors" && (
             <Image
               source={require("../assets/gamehand_scissors.png")}
-              style={styles.handLeftScissors}
+              style={styles.handRightScissors}
             />
           )}
 
@@ -209,19 +223,19 @@ useEffect(() => {
             {showHands && playerChoice === "scissors" && (
               <Image
                 source={require("../assets/gamehand_scissors.png")}
-                style={styles.handRightScissors}
+                style={styles.handLeftScissors}
               />
             )}
             {showHands && playerChoice === "rock" && (
               <Image
                 source={require("../assets/gamehand_rock.png")}
-                style={styles.handRightRock}
+                style={styles.handLeftRock}
               />
             )}
             {showHands && playerChoice === "paper" && (
               <Image
                 source={require("../assets/gamehand_paper.png")}
-                style={styles.handRightPaper}
+                style={styles.handLeftPaper}
               />
             )}
           </View>
@@ -329,14 +343,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    alignSelf: "center",
     backgroundColor: "rgba(255, 255, 255, 0.65)", 
     justifyContent: "center",
     alignItems: "center",
     zIndex: 5, 
   },
   container: {
-    flex: 1,
-    paddingHorizontal: 20,
+    // flex: 1,
+    paddingHorizontal: 40,
     paddingTop: 40,
   },
   header: {
@@ -359,27 +374,68 @@ const styles = StyleSheet.create({
     fontFamily: "KiwiMaru_400Regular",
   },
   scoreContainer: {
-    alignItems: "center",
+    alignItems: "start",
     marginBottom: 30,
-    right: 100,
   },
   scoreTitle: {
     fontSize: 40,
     color: "#000",
     marginBottom: 10,
     fontFamily: "Kavoon_400Regular",
+    flexDirection: "row",
+    width: "auto",
+  },
+  playerContainer: {
+    flex: 3,
+  },
+  vsContainer: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  botContainer: {
+    flex: 3,
+  },
+  playerText: {
+    fontSize: 36,
+    color: "#000",
+    fontFamily: "Kavoon_400Regular",
+    textAlign: "right",
+    marginRight: 5,
+  },
+  botText: {
+    fontSize: 36,
+    color: "#000",
+    fontFamily: "Kavoon_400Regular",
+    textAlign: "left",
+    marginLeft: 5,
+  },
+  vsText: {
+    fontSize: 30,
+    color: "#000",
+    fontFamily: "Kavoon_400Regular",
+    textAlign: "center",
+    textAlignVertical: "bottom"
   },
   scores: {
     flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "center",
+    // flex: 1,
   },
   scoreBox: {
-    width: 60,
-    height: 60,
     backgroundColor: "#FFF",
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: 10,
-    marginLeft: 40,
+    marginHorizontal: 40,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+    // marginLeft: 40,
+    width: "auto",
+    alignContent: "center",
+  },
+  scoreBoxPlayer: {
+    flexShrink: 1,
+  },
+  scoreBoxBot: {
+    flexShrink: 1,
   },
   scoreText: {
     fontSize: 40,
@@ -396,46 +452,46 @@ const styles = StyleSheet.create({
     width: 275,
     height: 137,
     position: "absolute",
-    bottom: 300,
-    right: 150,
-  },
-  handLeftPaper: {
-    width: 275,
-    height: 137,
-    position: "absolute",
-    bottom: 300,
-    right: 150,
-  },
-  handLeftScissors: {
-    transform: "scaleX(-1)",
-    width: 275,
-    height: 114,
-    position: "absolute",
-    bottom: 300,
-    right: 150,
-  },
-  handRightScissors: {
-    width: 275,
-    height: 114,
-    position: "absolute",
-    left: 100,
     bottom: 50,
+    right: 150,
   },
   handRightRock: {
     transform: "scaleX(-1)",
     width: 275,
     height: 137,
     position: "absolute",
-    left: 100,
+    left: 150,
+    bottom: 300,
+  },
+  handLeftPaper: {
+    width: 275,
+    height: 137,
+    position: "absolute",
     bottom: 50,
+    right: 150,
   },
   handRightPaper: {
     transform: "scaleX(-1)",
     width: 275,
     height: 137,
     position: "absolute",
-    left: 100,
+    left: 150,
+    bottom: 300,
+  },
+  handLeftScissors: {
+    transform: "scaleX(-1)",
+    width: 275,
+    height: 114,
+    position: "absolute",
     bottom: 50,
+    right: 150,
+  },
+  handRightScissors: {
+    width: 275,
+    height: 114,
+    position: "absolute",
+    left: 150,
+    bottom: 300,
   },
   timerContainer: {
     flex: 1,
@@ -451,6 +507,7 @@ const styles = StyleSheet.create({
     fontSize: 200,
     color: "black",
     fontFamily: "Kavoon_400Regular",
+    marginBottom: 100,
   },
   buttonsContainer: {
     flexDirection: "row", 

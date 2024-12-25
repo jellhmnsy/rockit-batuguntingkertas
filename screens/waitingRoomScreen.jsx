@@ -45,6 +45,7 @@ const WaitingRoom = () => {
     <ImageBackground
       source={require('../assets/Waiting Room (4).png')} // Replace with your image URL
       style={styles.background}
+      resizeMode='stretch'
     >
       <View style={styles.container}>
         <Text style={styles.title}>Waiting Room</Text>
@@ -86,7 +87,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 40,
-    fontWeight: 'bold',
     marginTop:50,
     marginBottom: 30,
     fontFamily: 'Kavoon_400Regular',
@@ -99,9 +99,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderColor:'#21A0A0',
     borderWidth: 1,
-    padding: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 20,
     borderRadius: 20,
-    width: 197,
+    // width: 197,
     height: 67,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -111,13 +112,12 @@ const styles = StyleSheet.create({
   },
   tokenText: {
     fontSize: 24,
-    fontWeight: 'bold',
     fontFamily: 'KiwiMaru_400Regular'
   },
   tokenValue: {
     fontSize: 32,
-    fontWeight: 'bold',
     color: '#006400',
+    marginBottom: 5,
     marginLeft: 5,
     fontFamily: 'Kavoon_400Regular'
   },
@@ -135,17 +135,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    marginBottom: 100
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.84,
+    // elevation: 5,
+    marginBottom: 100,
+    backgroundColor: 'white'
   },
   startButtonText: {
     color: 'black',
     fontSize: 32,
-    fontWeight: 'bold',
     fontFamily: 'Kavoon_400Regular',
   },
 });

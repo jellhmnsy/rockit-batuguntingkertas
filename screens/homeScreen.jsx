@@ -328,7 +328,9 @@ const HomeScreen = ({navigation}) => {
                     keyExtractor={item => item.id.toString()} />
                   {userRank && userRank.rank > 5 && (
                     <View style={[styles.row, styles.userRankRow]}>
-                      <Text style={styles.cellRank}>{userRank.rank}</Text>
+                      <View style={styles.cellRankContainer}>
+                        <Text style={styles.cellRank}>{userRank.rank}</Text>
+                      </View>
                       <Text style={styles.cellUsernameMe}>{userRank.username}</Text>
                       <Text style={styles.cellScoreMe}>{userRank.win_count}</Text>
                     </View>
@@ -726,6 +728,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cellRank: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: '500',
+    verticalAlign: 'middle',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellRankMe: {
     flex: 1,
     textAlign: 'center',
     fontWeight: '500',

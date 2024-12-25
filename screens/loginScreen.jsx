@@ -94,6 +94,7 @@ export default function LoginScreen({ navigation }) {
       <ImageBackground
         source={require('../assets/Login Screen (1).png')}
         style={styles.background}
+        resizeMode='stretch'
       >
         <View style={styles.container}>
           <Text style={styles.title}>LOGIN</Text>
@@ -157,19 +158,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
+    width: undefined,
+    height: undefined,
+    resizeMode: 'cover',
   },
   container: {
     backgroundColor: 'rgba(255, 255, 255, 0.41)', // Semi-transparent background
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 20,
     alignItems: 'center',
     width: 286,
     height: 485,
   },
   title: {
-    fontSize: 24,
+    fontSize: 40,
     marginBottom: 20,
     fontFamily: 'Kavoon_400Regular',
   },
@@ -185,7 +187,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   input: {
-    width: 265,
+    width: "100%",
     backgroundColor: '#F5F5F5',
     paddingHorizontal: 10,
     marginBottom: 15,
