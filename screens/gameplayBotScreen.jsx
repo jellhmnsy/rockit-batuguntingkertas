@@ -86,7 +86,7 @@ const GameplayScreenBot = ({ navigation }) => {
 
       setTimeout(() => {
         setShowModal(true);
-      }, 1000);
+      }, 3000);
 
 
       const timeout = setTimeout(() => {

@@ -243,15 +243,17 @@ const HomeScreen = ({navigation}) => {
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.soundButton} onPress={toggleMute}>
-          <Ionicons name={icon} size={38} color="black" />        
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.soundButton} onPress={handleInformationPress}>
-          <Image style={styles.documentIcon} source={require('../assets/icon/home/file-1.png')}/>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.leaderboardButton} onPress={handleLeaderboardPress}>
-          <MaterialIcons name="leaderboard" size={36} color="black" />
-        </TouchableOpacity>
+        <View style={styles.footerWrapper}>
+          <TouchableOpacity style={styles.soundButton} onPress={toggleMute}>
+            <Ionicons name={icon} size={38} color="black" />        
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.soundButton} onPress={handleInformationPress}>
+            <Image style={styles.documentIcon} source={require('../assets/icon/home/file-1.png')}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.leaderboardButton} onPress={handleLeaderboardPress}>
+            <MaterialIcons name="leaderboard" size={36} color="black" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Modal Informasi */}
@@ -399,6 +401,7 @@ const styles = StyleSheet.create({
     height: 80,
   },
   container: {
+    width: '100%',
     flex: 1,
     padding: 20,
     backgroundColor: '#046865',
@@ -492,6 +495,7 @@ const styles = StyleSheet.create({
     fontFamily: 'KiwiMaru_300Light',
   },
   soundButton: {
+    alignItems: 'center',
     backgroundColor: 'white',
     paddingVertical: 8,
     paddingHorizontal: 20,
@@ -507,6 +511,7 @@ const styles = StyleSheet.create({
   },
   leaderboardButton: {
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
     paddingVertical: 8,
     paddingHorizontal: 24,
@@ -518,9 +523,17 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   footer: {
-    flexDirection: 'row',
+    display: 'flex',
     width: '100%',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 20,
+  },
+  footerWrapper: {
+    width: '100%',
+    flexDirection: 'row',
     justifyContent: 'space-around',
+    alignItems: 'center',
   },
   icon: {
     width: 40,
