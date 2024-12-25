@@ -6,12 +6,14 @@ const AuthContext = createContext(); //untuk membuat konteks yang memungkinkan d
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userId,setUserId] = useState(null);
 
   const loginAuth =  async(username,pin) => {
     try {
         const response = await login(username, pin);
         console.log(response.data.token)
         setUser( response.data.token );
+        setUserId( response.data.id );
         AsyncStorage.setItem('accessToken', response.data.token);
     } catch (error) {
         console.log(error.response.data)
@@ -21,6 +23,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     setUser(null);
+    setUserId(null);
     await AsyncStorage.removeItem('accessToken');
   };
   return (

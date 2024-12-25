@@ -14,17 +14,20 @@ import {
   KiwiMaru_400Regular,
   KiwiMaru_500Medium,
 } from '@expo-google-fonts/kiwi-maru';
+import { useGame } from '../contexts/GameContext';
 
 const WaitingRoom = () => {
-  const [token, setToken] = useState(''); // Dynamic token
-  const [playersJoined, setPlayersJoined] = useState(1); // Dynamic player count
+  const {getToken,token,playersJoined} = useGame();
+  const [gameCreator, setgameCreator] = useState(false);
   const totalPlayers = 2;
 
   useEffect(() => {
     // Simulate fetching token from API or backend
-    const generatedToken = Math.floor(10000 + Math.random() * 90000).toString();
-    setToken(generatedToken);
-  }, []);
+    if (!token) {
+      getToken();
+      setgameCreator(true);
+    }
+  }, [token]);
 
   const handleStartGame = () => {
     if (playersJoined < totalPlayers) {
@@ -60,7 +63,7 @@ const WaitingRoom = () => {
         <View style={styles.spacer}></View>
 
         <TouchableOpacity
-          style={styles.startButton}
+          style={[styles.startButton, !gameCreator ? styles.hidden : null]}
           onPress={handleStartGame}
         >
           <Text style={styles.startButtonText}>START</Text>
@@ -148,6 +151,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Kavoon_400Regular',
   },
+  hidden: {
+    display: 'none',
+  }
 });
 
 export default WaitingRoom;

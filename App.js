@@ -10,6 +10,7 @@ import PostGameScreen from "./screens/postGameplayBotScreen";
 import RegisterScreen from "./screens/registerScreen";
 import HomeScreen from "./screens/homeScreen";
 import { AuthProvider } from './contexts/AuthContext';
+import { GameProvider } from "./contexts/GameContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +18,9 @@ const App = () => {
   return (
     <AuthProvider>
       <NavigationContainer>
-        <AppNavigator />
+        <GameProvider>
+          <AppNavigator />
+        </GameProvider>
       </NavigationContainer>
     </AuthProvider>
   );

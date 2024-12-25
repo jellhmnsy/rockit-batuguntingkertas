@@ -14,6 +14,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { TouchableWithoutFeedback } from 'react-native-web';
+import { useGame } from '../contexts/GameContext';
 
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
@@ -96,6 +97,8 @@ const HomeScreen = ({navigation}) => {
   const [index, setIndex] = useState(0);
   const flatListRef = useRef(null);
 
+  const { joinGame, token:gameToken, resetGameToken } = useGame();
+
   const [icon, setIcon] = useState('volume-high-outline'); // Ikon awal
   const toggleIcon = () => {
     setIcon(icon === 'volume-high-outline' ? 'volume-mute-outline' : 'volume-high-outline'); // Toggle ikon
@@ -128,17 +131,34 @@ const HomeScreen = ({navigation}) => {
     setToken('');
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate token (example)
     if (token.trim() === '') {
       alert('Please enter a token');
       return;
     }
 
-    // Handle token submission logic here (e.g., send to server)
-    console.log('Submitted Token:', token);
+    try {
+      const response = await joinGame(token);
+    
+    } catch (error) {
+      console.log(error);
+    }
+    
+    // Handle token submission logic here (e.g., sen  d to server)
+    console.log('Submitted Token:', token, 'Response:', response);
     handleCloseModal();
   };
+
+  useEffect(() => {
+    if (gameToken) {
+      navigation.navigate('WaitingRoom');
+    }
+  }, [gameToken]);
+
+  useEffect(() => {
+    resetGameToken();
+  },[]);
 
   const handleCreate = () => {
 navigation.navigate('WaitingRoom')
@@ -255,7 +275,7 @@ navigation.navigate('WaitingRoom')
                 <Text style={styles.modalTitle}>Join Room</Text>
                 <TextInput style={styles.modalInput} placeholder="Masukkan Token" value={token} onChangeText={(text) => setToken(text)} />
                 <View style={styles.modalButtonContainer}>
-                  <TouchableOpacity style={styles.modalButton} onPress={handleSubmit}>
+                  <TouchableOpacity style={styles.modalButton} onPress={() => handleSubmit()}>
                     <Text style={styles.modalButtonText}>SUBMIT</Text>
                   </TouchableOpacity>
                 </View>
