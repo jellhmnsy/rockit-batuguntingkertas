@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput, FlatList, Dimensions} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput, FlatList, Dimensions,ActivityIndicator} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 //Font
@@ -15,7 +15,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { TouchableWithoutFeedback } from 'react-native-web';
 
-
+//Api
+import { getLeaderboard} from "../api/restApi";
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
 const slideList = [
@@ -94,6 +95,10 @@ const HomeScreen = ({navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [token, setToken] = useState('');
   const [index, setIndex] = useState(0);
+  const [data, setData] = useState([]);
+  const [userRank, setUserRank] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const flatListRef = useRef(null);
 
   const [icon, setIcon] = useState('volume-high-outline'); // Ikon awal
@@ -141,24 +146,39 @@ const HomeScreen = ({navigation}) => {
   };
 
   const handleCreate = () => {
-navigation.navigate('WaitingRoom')
+      navigation.navigate('WaitingRoom')
   };
 
-  // Data untuk tabel
-    const data = [
-      { id: '1', name: 'John Doe', age: 25 },
-      { id: '2', name: 'Jane Smith', age: 28 },
-      { id: '3', name: 'Robert Brown', age: 30 },
-    ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log('Fetching data...');
+        setLoading(true);
+        setError(null);
+        const result = await getLeaderboard();
+        console.log('Data successfully loaded:', result);
+        setData(result.leaderboard);
+        setUserRank(result.user_rank);
+      } catch (err) {
+        console.error('Error loading data:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+        console.log('Loading completed');
+      }
+    };
+
+    fetchData();
+  }, []);
   
     // Render baris tabel
     const renderItem = ({ item }) => (
-      <View style={styles.row}>
+      <View style={[styles.row, item.id === userRank?.id ? styles.highlightRow : null]}>
         <View style={styles.cellRankContainer}>
-          <Text style={styles.cellRank}>{item.id}</Text>
+          <Text style={styles.cellRank}>{item.rank}</Text>
         </View>
-        <Text style={styles.cellUsername}>{item.name}</Text>
-        <Text style={styles.cellScore}>{item.age}</Text>
+        <Text style={styles.cellUsername}>{item.username}</Text>
+        <Text style={styles.cellScore}>{item.win_count}</Text>
       </View>
     );
 
@@ -286,7 +306,25 @@ navigation.navigate('WaitingRoom')
                       <Text style={styles.cellHeaderScore}>Score</Text>
                     </View>
                     {/* Data Tabel */}
-                    <FlatList data={data} renderItem={renderItem} keyExtractor={item => item.id} />
+                    {loading ? (
+                <ActivityIndicator size="large" color="#6200EE" />
+              ) : error ? (
+                <Text style={styles.errorText}>{error}</Text>
+              ) : (
+                <>
+                  <FlatList
+                    data={data.filter(item => item.rank <= 5)}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id.toString()} />
+                  {userRank && userRank.rank > 5 && (
+                    <View style={[styles.row, styles.userRankRow]}>
+                      <Text style={styles.cell}>{userRank.rank}</Text>
+                      <Text style={styles.cell}>{userRank.username}</Text>
+                      <Text style={styles.cell}>{userRank.win_count}</Text>
+                    </View>
+                  )}
+                </>
+              )}
                   </View>
                 </View>
               </View>
@@ -686,6 +724,12 @@ const styles = StyleSheet.create({
     paddingHorizontal:0,
     textAlign: 'center',
     fontFamily: 'KiwiMaru_500Medium',
+  },
+  userRankRow: {
+    backgroundColor: '#e0f7fa',
+  },
+  highlightRow: {
+    backgroundColor: '#e0f7fa',
   },
 });
 
