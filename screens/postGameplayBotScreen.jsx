@@ -52,15 +52,16 @@ const PostGameScreen = ({ route, navigation }) => {
     }, []);
     
       // Render baris tabel
-      const renderItem = ({ item }) => (
-        <View style={[styles.row, item.id === userRank?.id ? styles.highlightRow : null]}>
-          <View style={styles.cellRankContainer}>
-            <Text style={styles.cellRank}>{item.rank}</Text>
-          </View>
-          <Text style={styles.cellUsername}>{item.username}</Text>
-          <Text style={styles.cellScore}>{item.win_count}</Text>
+
+    const renderItem = ({ item }) => (
+      <View style={[styles.row, item.id === userRank?.id ? styles.highlightRow : null]}>
+        <View style={styles.cellRankContainer}>
+          <Text style={styles.cellRank}>{item.rank}</Text>
         </View>
-      );
+        <Text style={[styles.cellUsername, item.id === userRank?.id ? styles.cellUsernameMe : null]}>{item.username}</Text>
+        <Text style={[styles.cellScore, item.id === userRank?.id ? styles.cellScoreMe : null]}>{item.win_count}</Text>
+      </View>
+    );
   
 
   const [fontsLoaded] = useFonts({
@@ -92,9 +93,13 @@ const PostGameScreen = ({ route, navigation }) => {
       resizeMode="stretch"
     >
       <View style={styles.gameOverContainer}>
-        <Text style={styles.gameOverText}>
-          {scoreA === 3 ? "You Win!" : "You Lose!"}
-        </Text>
+        <View style={styles.firstCircle}>
+          <View style={styles.secondCircle}>
+          <Text style={styles.gameOverText}>
+            {scoreA === 3 ? "You Win!" : "You Lose!"}
+          </Text>
+          </View>  
+        </View>
         {/* Score */}
         <View style={styles.scoreContainer}>
           <Text style={styles.scoreTitle}>A vs B</Text>
@@ -119,52 +124,54 @@ const PostGameScreen = ({ route, navigation }) => {
         </TouchableOpacity>
 
       {/* Modal Leaderboard */}
-              <Modal animationType="fade" transparent={true} visible={isModalVisible === 'leaderboard'} onRequestClose={handleCloseModal}>
-              <TouchableOpacity style={styles.modalContainer} activeOpacity={1} onPressOut={handleCloseModal}>
-                <TouchableWithoutFeedback>
-                  <View style={styles.coba}>
-                    <View style={styles.leaderboardTitle}>
-                      <Image style={styles.leaderboardIconModals} source={require('../assets/icon/home/leaderboard.png')}/>
-                      <Text style={styles.leaderboardTitleText}>Leaderboard</Text>
+        <Modal animationType="fade" transparent={true} visible={isModalVisible === 'leaderboard'} onRequestClose={handleCloseModal}>
+        <TouchableOpacity style={styles.modalContainer} activeOpacity={1} onPressOut={handleCloseModal}>
+          <TouchableWithoutFeedback>
+            <View style={styles.coba}>
+              <View style={styles.leaderboardTitle}>
+                <Image style={styles.leaderboardIconModals} source={require('../assets/icon/home/leaderboard.png')}/>
+                <Text style={styles.leaderboardTitleText}>Leaderboard</Text>
+              </View>
+              <View style={styles.leaderboardContainer}>
+                <View style={styles.modalContent}>
+                  {/* Header Modal */}               
+                  {/* Tabel */}
+                  <View style={styles.table}>
+                  {/* Header Tabel */}
+                    <View style={styles.rowHeader}>
+                      <Text style={styles.cellHeaderRank}>Rank</Text>
+                      <Text style={styles.cellHeaderUsername}>Username</Text>
+                      <Text style={styles.cellHeaderScore}>Score</Text>
                     </View>
-                    <View style={styles.leaderboardContainer}>
-                      <View style={styles.modalContent}>
-                        {/* Header Modal */}               
-                        {/* Tabel */}
-                        <View style={styles.table}>
-                        {/* Header Tabel */}
-                          <View style={styles.rowHeader}>
-                            <Text style={styles.cellHeaderRank}>Rank</Text>
-                            <Text style={styles.cellHeaderUsername}>Username</Text>
-                            <Text style={styles.cellHeaderScore}>Score</Text>
-                          </View>
-                          {/* Data Tabel */}
-                          {loading ? (
-                      <ActivityIndicator size="large" color="#6200EE" />
-                    ) : error ? (
-                      <Text style={styles.errorText}>{error}</Text>
-                    ) : (
-                      <>
-                        <FlatList
-                          data={data.filter(item => item.rank <= 5)}
-                          renderItem={renderItem}
-                          keyExtractor={item => item.id.toString()} />
-                        {userRank && userRank.rank > 5 && (
-                          <View style={[styles.row, styles.userRankRow]}>
-                            <Text style={styles.cell}>{userRank.rank}</Text>
-                            <Text style={styles.cell}>{userRank.username}</Text>
-                            <Text style={styles.cell}>{userRank.win_count}</Text>
-                          </View>
-                        )}
-                      </>
-                    )}
-                        </View>
+                    {/* Data Tabel */}
+                    {loading ? (
+                <ActivityIndicator size="large" color="#6200EE" />
+              ) : error ? (
+                <Text style={styles.errorText}>{error}</Text>
+              ) : (
+                <>
+                  <FlatList
+                    data={data.filter(item => item.rank <= 5)}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id.toString()} />
+                  {userRank && userRank.rank > 5 && (
+                    <View style={[styles.row, styles.userRankRow]}>
+                      <View style={styles.cellRankContainer}>
+                        <Text style={styles.cellRank}>{userRank.rank}</Text>
                       </View>
+                      <Text style={styles.cellUsernameMe}>{userRank.username}</Text>
+                      <Text style={styles.cellScoreMe}>{userRank.win_count}</Text>
                     </View>
+                  )}
+                </>
+              )}
                   </View>
-                </TouchableWithoutFeedback>
-              </TouchableOpacity>
-            </Modal>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
 
       </View>
     </ImageBackground>
@@ -175,23 +182,41 @@ const PostGameScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   backgroundGameOver: {
     flex: 1,
-    justifyContent: "space-evenly",
-    alignItems: "stretch",
-
+    padding: 40,
   },
   gameOverContainer: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  firstCircle: {
+    width: 332,
+    height: 277,
+    borderRadius: "100%",
+    backgroundColor: "#FFF",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  secondCircle: {
+    width: 289,
+    height: 237,
+    borderRadius: "100%",
+    backgroundColor: "#046865",
+    justifyContent: "center",
+  },
+  gameOverImage: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 302,
+    height: 244,
+    marginTop: -100,
+    marginBottom: -100,
   },
   gameOverText: {
     fontSize: 40,
     color: "white",
     marginBottom: 20,
-    position: "absolute",
-    top: 167,
-    left: 81,
     fontFamily: "Kavoon_400Regular",
+    textAlign: "center",
   },
   buttonGameOverMenu: {
     paddingHorizontal: 53,
@@ -220,7 +245,6 @@ const styles = StyleSheet.create({
   },
   scoreContainer: {
     alignItems: "center",
-    marginTop: 150,
     marginBottom: 30,
   },
   scoreTitle: {
@@ -244,6 +268,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: "#000",
     fontFamily: "Kavoon_400Regular",
+    marginTop: -20,
   },
 
   //Styling Modal
@@ -290,14 +315,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: 'white',
   },
-  cellHeaderRank: {
-    flex: 1,
-    paddingVertical: 5,
-    paddingHorizontal:0,
-    textAlign: 'center',
-    color: 'white',
-    fontFamily: 'KiwiMaru_500Medium',
-  },
   cellHeaderUsername: {
     flex: 3,
     paddingVertical: 5,
@@ -337,6 +354,54 @@ const styles = StyleSheet.create({
     verticalAlign: 'middle',
     fontFamily: 'KiwiMaru_500Medium',
   },
+  cellHeaderRank: {
+    flex: 1,
+    paddingVertical: 5,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    color: 'white',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellHeaderUsername: {
+    flex: 3,
+    paddingVertical: 5,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    color: 'white',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellHeaderScore: {
+    flex: 2,
+    paddingVertical: 5,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    color: 'white',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellRankContainer : {
+    width: 30,
+    height: 30,
+    marginLeft: 10,
+    marginVertical: 5,
+    backgroundColor: 'white',
+    borderRadius: '100%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  cellRank: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: '500',
+    verticalAlign: 'middle',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellRankMe: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: '500',
+    verticalAlign: 'middle',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
   cellUsername: {
     flex: 3,
     paddingVertical: 10,
@@ -344,12 +409,34 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'KiwiMaru_500Medium',
   },
+  cellUsernameMe: {
+    flex: 3,
+    paddingVertical: 10,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    fontFamily: 'KiwiMaru_500Medium',
+    color: 'white'
+  },
   cellScore: {
     flex: 2,
     paddingVertical: 10,
     paddingHorizontal:0,
     textAlign: 'center',
     fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellScoreMe: {
+    flex: 2,
+    paddingVertical: 10,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    fontFamily: 'KiwiMaru_500Medium',
+    color: 'white'
+  },
+  userRankRow: {
+    backgroundColor: '#046865',
+  },
+  highlightRow: {
+    backgroundColor: '#046865',
   },
 });
 
