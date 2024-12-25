@@ -318,9 +318,9 @@ const HomeScreen = ({navigation}) => {
                     keyExtractor={item => item.id.toString()} />
                   {userRank && userRank.rank > 5 && (
                     <View style={[styles.row, styles.userRankRow]}>
-                      <Text style={styles.cell}>{userRank.rank}</Text>
-                      <Text style={styles.cell}>{userRank.username}</Text>
-                      <Text style={styles.cell}>{userRank.win_count}</Text>
+                      <Text style={styles.cellRank}>{userRank.rank}</Text>
+                      <Text style={styles.cellUsername}>{userRank.username}</Text>
+                      <Text style={styles.cellScore}>{userRank.win_count}</Text>
                     </View>
                   )}
                 </>

@@ -11,6 +11,8 @@ import {
 import { useFonts } from "@expo-google-fonts/kavoon";
 import { Kavoon_400Regular } from "@expo-google-fonts/kavoon";
 import { KiwiMaru_400Regular } from "@expo-google-fonts/kiwi-maru";
+import { useAuth } from "../contexts/AuthContext"; // Import useAuth dari AuthContext.js
+
 
 const GameplayScreenBot = ({ navigation }) => {
   const [scoreA, setScoreA] = useState(0);
@@ -23,6 +25,16 @@ const GameplayScreenBot = ({ navigation }) => {
   const [handLeft, setHandLeft] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [roundResult, setRoundResult] = useState(""); // Untuk menentukan hasil ronde
+  const [selectedButton, setSelectedButton] = useState(null); // State to track the selected button
+
+  const handleChoice = (choice) => {
+    if (!showHands && timer > 0) {
+      setPlayerChoice(choice);
+      setSelectedButton(choice); // Set the selected button state
+    }
+  };
+  const { user } = useAuth(); // Ambil data pengguna dari AuthContext
+  console.log("Data pengguna yang diterima:", user); // Log data user lengkap
 
   useEffect(() => {
     if (!gameOver && timer > 0) {
@@ -101,6 +113,7 @@ const GameplayScreenBot = ({ navigation }) => {
     setHandLeft(null);
     setShowHands(false);
     setTimer(5);
+    setSelectedButton(null);
   };
 
 //   const resetGame = () => {
@@ -114,11 +127,11 @@ const GameplayScreenBot = ({ navigation }) => {
 //     setShowModal(false); // Sembunyikan modal
 //   };
 
-  const handleChoice = (choice) => {
-    if (!showHands && timer > 0) {
-      setPlayerChoice(choice);
-    }
-  };
+  // const handleChoice = (choice) => {
+  //   if (!showHands && timer > 0) {
+  //     setPlayerChoice(choice);
+  //   }
+  // };
 
 useEffect(() => {
     if (gameOver) {
@@ -159,7 +172,9 @@ useEffect(() => {
 
           {/* Score */}
           <View style={styles.scoreContainer}>
-            <Text style={styles.scoreTitle}>A vs B</Text>
+            <Text style={styles.scoreTitle}>
+              {user?.username || "Player"} vs Bot
+            </Text>
             <View style={styles.scores}>
               <View style={styles.scoreBox}>
                 <Text style={styles.scoreText}>{scoreA}</Text>
@@ -213,34 +228,36 @@ useEffect(() => {
 
           {/* Buttons */}
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleChoice("scissors")}
-            >
-              <Image
-                source={require("../assets/scissors-hand.png")}
-                style={styles.buttonIconHand}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleChoice("rock")}
-            >
-              <Image
-                source={require("../assets/rock-hand.png")}
-                style={styles.buttonIconRock}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleChoice("paper")}
-            >
-              <Image
-                source={require("../assets/paper-hand.png")}
-                style={styles.buttonIconPaper}
-              />
-            </TouchableOpacity>
-          </View>
+        <TouchableOpacity 
+          style={[styles.button, selectedButton === "scissors" && { backgroundColor: "#FF8552" }]} 
+          onPress={() => handleChoice("scissors")}
+        >
+          <Image 
+            source={require("../assets/scissors-hand.png")} 
+            style={styles.buttonIconHand} 
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.button, selectedButton === "rock" && { backgroundColor: "#FF8552" }]} 
+          onPress={() => handleChoice("rock")}
+        >
+          <Image 
+            source={require("../assets/rock-hand.png")} 
+            style={styles.buttonIconRock} 
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.button, selectedButton === "paper" && { backgroundColor: "#FF8552" }]} 
+          onPress={() => handleChoice("paper")}
+        >
+          <Image 
+            source={require("../assets/paper-hand.png")} 
+            style={styles.buttonIconPaper} 
+          />
+        </TouchableOpacity>
+      </View>
         </>
       </View>
 
@@ -338,7 +355,6 @@ const styles = StyleSheet.create({
   },
   lifeText: {
     fontSize: 32,
-    fontWeight: "bold",
     color: "#000",
     fontFamily: "KiwiMaru_400Regular",
   },
@@ -349,7 +365,6 @@ const styles = StyleSheet.create({
   },
   scoreTitle: {
     fontSize: 40,
-    fontWeight: "bold",
     color: "#000",
     marginBottom: 10,
     fontFamily: "Kavoon_400Regular",
@@ -368,7 +383,6 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 40,
-    fontWeight: "bold",
     color: "#000",
     fontFamily: "Kavoon_400Regular",
   },
@@ -434,9 +448,8 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -25 }, { translateY: -25 }],
   },
   timerText: {
-    fontSize: 72,
-    fontWeight: "bold",
-    color: "#FFF",
+    fontSize: 200,
+    color: "black",
     fontFamily: "Kavoon_400Regular",
   },
   buttonsContainer: {

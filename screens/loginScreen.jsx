@@ -14,11 +14,11 @@ import {
 } from 'react-native';
 // import AppLoading from 'expo-app-loading';
 import { Kavoon_400Regular } from '@expo-google-fonts/kavoon';
-import {
-  KiwiMaru_300Light,
-  KiwiMaru_400Regular,
-  KiwiMaru_500Medium,
-} from '@expo-google-fonts/kiwi-maru';
+import { KiwiMaru_300Light } from '@expo-google-fonts/kiwi-maru';
+import { KiwiMaru_400Regular } from '@expo-google-fonts/kiwi-maru';
+import { KiwiMaru_500Medium } from '@expo-google-fonts/kiwi-maru';
+
+
 import Toast from "react-native-toast-message";
 import { login } from "../api/restApi"; // Import the login API function
 import { useAuth } from "../contexts/AuthContext.js"; // Import AuthContext
@@ -89,7 +89,7 @@ export default function LoginScreen({ navigation }) {
     KiwiMaru_500Medium,
   });
 
-  return (
+  return fontsLoaded ? (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ImageBackground
         source={require('../assets/Login Screen (1).png')}
@@ -147,7 +147,9 @@ export default function LoginScreen({ navigation }) {
         </View>
       </ImageBackground>
     </TouchableWithoutFeedback>
-  );
+  ) : (
+      <Text>Loading fonts...</Text>
+    );
 };
 
 const styles = StyleSheet.create({
@@ -166,7 +168,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 20,
     fontFamily: 'Kavoon_400Regular',
   },
@@ -234,9 +235,9 @@ const styles = StyleSheet.create({
   },
   registerText: {
     color: '#FF4500',
-    fontFamily: 'KiwiMaru_400Regular',
     fontSize: 15,
     marginTop: 5, // Add space between "Don’t have an account?" and "Register here"
+    fontFamily: 'KiwiMaru_400Regular',
   },
   errorText: {
     fontSize: 12,

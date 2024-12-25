@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,13 +6,62 @@ import {
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+  Modal,
+  Image,
 } from "react-native";
+import { TouchableWithoutFeedback } from 'react-native-web';
 import { useFonts } from "@expo-google-fonts/kavoon";
 import { Kavoon_400Regular } from "@expo-google-fonts/kavoon";
 import { KiwiMaru_400Regular } from "@expo-google-fonts/kiwi-maru";
 
+//Api
+import { getLeaderboard} from "../api/restApi";
+
 const PostGameScreen = ({ route, navigation }) => {
   const { scoreA, scoreB } = route.params;
+
+  //Modal Leaderboard
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [data, setData] = useState([]);
+  const [userRank, setUserRank] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          console.log('Fetching data...');
+          setLoading(true);
+          setError(null);
+          const result = await getLeaderboard();
+          console.log('Data successfully loaded:', result);
+          setData(result.leaderboard);
+          setUserRank(result.user_rank);
+        } catch (err) {
+          console.error('Error loading data:', err);
+          setError(err.message);
+        } finally {
+          setLoading(false);
+          console.log('Loading completed');
+        }
+      };
+  
+      fetchData();
+    }, []);
+    
+      // Render baris tabel
+      const renderItem = ({ item }) => (
+        <View style={[styles.row, item.id === userRank?.id ? styles.highlightRow : null]}>
+          <View style={styles.cellRankContainer}>
+            <Text style={styles.cellRank}>{item.rank}</Text>
+          </View>
+          <Text style={styles.cellUsername}>{item.username}</Text>
+          <Text style={styles.cellScore}>{item.win_count}</Text>
+        </View>
+      );
+  
 
   const [fontsLoaded] = useFonts({
     Kavoon_400Regular,
@@ -23,12 +72,20 @@ const PostGameScreen = ({ route, navigation }) => {
     navigation.navigate("Home"); // Navigate to Home screen
   };
 
+  //Handle Leaderboard
+  const handleLeaderboardPress = () => {
+    setIsModalVisible('leaderboard', true);
+  }
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
 
   if (!fontsLoaded) {
     return <Text>Loading fonts...</Text>;
   }
 
-  return (
+  return fontsLoaded ?(
     <ImageBackground
       source={require("../assets/post-gameplay-bg.png")}
       style={styles.backgroundGameOver}
@@ -58,11 +115,62 @@ const PostGameScreen = ({ route, navigation }) => {
         <TouchableOpacity
           style={styles.buttonGameOverLeaderboard}
         >
-          <Text style={styles.buttonTextGameOver}>Leaderboard</Text>
+          <Text style={styles.buttonTextGameOver} onPress={handleLeaderboardPress}>Leaderboard</Text>
         </TouchableOpacity>
+
+      {/* Modal Leaderboard */}
+              <Modal animationType="fade" transparent={true} visible={isModalVisible === 'leaderboard'} onRequestClose={handleCloseModal}>
+              <TouchableOpacity style={styles.modalContainer} activeOpacity={1} onPressOut={handleCloseModal}>
+                <TouchableWithoutFeedback>
+                  <View style={styles.coba}>
+                    <View style={styles.leaderboardTitle}>
+                      <Image style={styles.leaderboardIconModals} source={require('../assets/icon/home/leaderboard.png')}/>
+                      <Text style={styles.leaderboardTitleText}>Leaderboard</Text>
+                    </View>
+                    <View style={styles.leaderboardContainer}>
+                      <View style={styles.modalContent}>
+                        {/* Header Modal */}               
+                        {/* Tabel */}
+                        <View style={styles.table}>
+                        {/* Header Tabel */}
+                          <View style={styles.rowHeader}>
+                            <Text style={styles.cellHeaderRank}>Rank</Text>
+                            <Text style={styles.cellHeaderUsername}>Username</Text>
+                            <Text style={styles.cellHeaderScore}>Score</Text>
+                          </View>
+                          {/* Data Tabel */}
+                          {loading ? (
+                      <ActivityIndicator size="large" color="#6200EE" />
+                    ) : error ? (
+                      <Text style={styles.errorText}>{error}</Text>
+                    ) : (
+                      <>
+                        <FlatList
+                          data={data.filter(item => item.rank <= 5)}
+                          renderItem={renderItem}
+                          keyExtractor={item => item.id.toString()} />
+                        {userRank && userRank.rank > 5 && (
+                          <View style={[styles.row, styles.userRankRow]}>
+                            <Text style={styles.cell}>{userRank.rank}</Text>
+                            <Text style={styles.cell}>{userRank.username}</Text>
+                            <Text style={styles.cell}>{userRank.win_count}</Text>
+                          </View>
+                        )}
+                      </>
+                    )}
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableWithoutFeedback>
+              </TouchableOpacity>
+            </Modal>
+
       </View>
     </ImageBackground>
-  );
+  ) : (
+      <Text>Loading fonts...</Text>
+    );
 };
 const styles = StyleSheet.create({
   backgroundGameOver: {
@@ -78,7 +186,6 @@ const styles = StyleSheet.create({
   },
   gameOverText: {
     fontSize: 40,
-    fontWeight: "bold",
     color: "white",
     marginBottom: 20,
     position: "absolute",
@@ -109,7 +216,6 @@ const styles = StyleSheet.create({
   buttonTextGameOver: {
     color: "white",
     fontSize: 24,
-    fontWeight: "bold",
     fontFamily: "KiwiMaru_400Regular",
   },
   scoreContainer: {
@@ -119,7 +225,6 @@ const styles = StyleSheet.create({
   },
   scoreTitle: {
     fontSize: 40,
-    fontWeight: "bold",
     color: "#000",
     marginBottom: 10,
     fontFamily: "Kavoon_400Regular",
@@ -137,9 +242,114 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 40,
-    fontWeight: "bold",
     color: "#000",
     fontFamily: "Kavoon_400Regular",
+  },
+
+  //Styling Modal
+  modalContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  coba: {
+    backgroundColor: 'white',
+    paddingTop: 20,
+    paddingHorizontal: 30,
+    paddingBottom: 30,
+    borderRadius: 30,
+    height: 'auto',
+  },
+  leaderboardTitle: {
+    opacity: 1,
+    paddingBottom: 5,
+    alignItems: 'center',
+  },
+  leaderboardIconModals: {
+    width: 80,
+    height: 80,
+  },
+  leaderboardTitleText: {
+    fontSize: 24,
+    textAlign: 'center',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  leaderboardContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  modalContent: {
+    backgroundColor: '#FF8552',
+    width: '100%',
+  },
+  rowHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#FF8552',
+    borderBottomWidth: 2,
+    borderColor: 'white',
+  },
+  cellHeaderRank: {
+    flex: 1,
+    paddingVertical: 5,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    color: 'white',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellHeaderUsername: {
+    flex: 3,
+    paddingVertical: 5,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    color: 'white',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellHeaderScore: {
+    flex: 2,
+    paddingVertical: 5,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    color: 'white',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  highlightRow: {
+    backgroundColor: '#e0f7fa',
+  },
+  cellRankContainer : {
+    width: 30,
+    height: 30,
+    marginLeft: 10,
+    marginVertical: 5,
+    backgroundColor: 'white',
+    borderRadius: '100%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  cellRank: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: '500',
+    verticalAlign: 'middle',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellUsername: {
+    flex: 3,
+    paddingVertical: 10,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    fontFamily: 'KiwiMaru_500Medium',
+  },
+  cellScore: {
+    flex: 2,
+    paddingVertical: 10,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    fontFamily: 'KiwiMaru_500Medium',
   },
 });
 
