@@ -34,7 +34,7 @@ const GameplayScreenBot = ({ navigation }) => {
     }
   };
   const { data } = useAuth(); // Ambil data pengguna dari AuthContext
-  console.log("Data pengguna yang diterima:", data); // Log data user lengkap
+  // console.log("Data pengguna yang diterima:", data); // Log data user lengkap
 
   useEffect(() => {
     if (!gameOver && timer > 0) {

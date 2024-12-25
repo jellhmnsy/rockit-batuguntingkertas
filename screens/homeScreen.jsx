@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, memo, useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput, FlatList, Dimensions,ActivityIndicator} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -18,6 +18,9 @@ import { TouchableWithoutFeedback } from 'react-native-web';
 //Api
 import { getLeaderboard} from "../api/restApi";
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
+
+//Audio
+import { AudioContext } from './AudioContext';
 
 const slideList = [
   {
@@ -68,8 +71,6 @@ const Slide = memo(({ data }) => {
   return null;
 });
 
-
-
 const Pagination = ({ index }) => (
   <View style={styles.pagination} pointerEvents="none">
     {slideList.map((_, i) => (
@@ -84,6 +85,18 @@ const handleLogout = (navigation) => {
 };
 
 const HomeScreen = ({navigation}) => {
+  //Audio
+  const { sound, isMuted, setIsMuted } = useContext(AudioContext); 
+  const [icon, setIcon] = useState('volume-high-outline'); // Ikon awal
+
+  useEffect(() => {
+    setIcon(isMuted ? 'volume-mute-outline' : 'volume-high-outline'); 
+  }, [isMuted]);
+
+  const toggleMute = async () => {
+    setIsMuted(!isMuted); 
+  };
+
   //Font
   const [fontsLoaded] = useFonts({
     Kavoon_400Regular,
@@ -100,11 +113,6 @@ const HomeScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const flatListRef = useRef(null);
-
-  const [icon, setIcon] = useState('volume-high-outline'); // Ikon awal
-  const toggleIcon = () => {
-    setIcon(icon === 'volume-high-outline' ? 'volume-mute-outline' : 'volume-high-outline'); // Toggle ikon
-  };
 
   const onScroll = useCallback((event) => {
     const slideSize = event.nativeEvent.layoutMeasurement.width;
@@ -177,8 +185,8 @@ const HomeScreen = ({navigation}) => {
         <View style={styles.cellRankContainer}>
           <Text style={styles.cellRank}>{item.rank}</Text>
         </View>
-        <Text style={styles.cellUsername}>{item.username}</Text>
-        <Text style={styles.cellScore}>{item.win_count}</Text>
+        <Text style={[styles.cellUsername, item.id === userRank?.id ? styles.cellUsernameMe : null]}>{item.username}</Text>
+        <Text style={[styles.cellScore, item.id === userRank?.id ? styles.cellScoreMe : null]}>{item.win_count}</Text>
       </View>
     );
 
@@ -235,7 +243,7 @@ const HomeScreen = ({navigation}) => {
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.soundButton} onPress={toggleIcon}>
+        <TouchableOpacity style={styles.soundButton} onPress={toggleMute}>
           <Ionicons name={icon} size={38} color="black" />        
         </TouchableOpacity>
         <TouchableOpacity style={styles.soundButton} onPress={handleInformationPress}>
@@ -319,8 +327,8 @@ const HomeScreen = ({navigation}) => {
                   {userRank && userRank.rank > 5 && (
                     <View style={[styles.row, styles.userRankRow]}>
                       <Text style={styles.cellRank}>{userRank.rank}</Text>
-                      <Text style={styles.cellUsername}>{userRank.username}</Text>
-                      <Text style={styles.cellScore}>{userRank.win_count}</Text>
+                      <Text style={styles.cellUsernameMe}>{userRank.username}</Text>
+                      <Text style={styles.cellScoreMe}>{userRank.win_count}</Text>
                     </View>
                   )}
                 </>
@@ -718,6 +726,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'KiwiMaru_500Medium',
   },
+  cellUsernameMe: {
+    flex: 3,
+    paddingVertical: 10,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    fontFamily: 'KiwiMaru_500Medium',
+    color: 'white'
+  },
   cellScore: {
     flex: 2,
     paddingVertical: 10,
@@ -725,11 +741,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'KiwiMaru_500Medium',
   },
+  cellScoreMe: {
+    flex: 2,
+    paddingVertical: 10,
+    paddingHorizontal:0,
+    textAlign: 'center',
+    fontFamily: 'KiwiMaru_500Medium',
+    color: 'white'
+  },
   userRankRow: {
-    backgroundColor: '#e0f7fa',
+    backgroundColor: '#046865',
   },
   highlightRow: {
-    backgroundColor: '#e0f7fa',
+    backgroundColor: '#046865',
   },
 });
 
