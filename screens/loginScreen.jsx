@@ -157,6 +157,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
   container: {
     backgroundColor: 'rgba(255, 255, 255, 0.41)', // Semi-transparent background
@@ -184,7 +186,6 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 265,
-    height: 39,
     backgroundColor: '#F5F5F5',
     paddingHorizontal: 10,
     marginBottom: 15,

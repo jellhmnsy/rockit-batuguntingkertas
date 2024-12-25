@@ -33,8 +33,8 @@ const GameplayScreenBot = ({ navigation }) => {
       setSelectedButton(choice); // Set the selected button state
     }
   };
-  const { user } = useAuth(); // Ambil data pengguna dari AuthContext
-  console.log("Data pengguna yang diterima:", user); // Log data user lengkap
+  const { data } = useAuth(); // Ambil data pengguna dari AuthContext
+  console.log("Data pengguna yang diterima:", data); // Log data user lengkap
 
   useEffect(() => {
     if (!gameOver && timer > 0) {
@@ -173,7 +173,7 @@ useEffect(() => {
           {/* Score */}
           <View style={styles.scoreContainer}>
             <Text style={styles.scoreTitle}>
-              {user?.username || "Player"} vs Bot
+              {data?.username || "Player"} vs Bot
             </Text>
             <View style={styles.scores}>
               <View style={styles.scoreBox}>
