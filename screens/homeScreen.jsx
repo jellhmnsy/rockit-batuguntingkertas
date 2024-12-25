@@ -77,6 +77,11 @@ const Pagination = ({ index }) => (
   </View>
 );
 
+const handleLogout = (navigation) => {
+  console.log('User logged out');
+  navigation.navigate('Login');
+};
+
 const HomeScreen = ({navigation}) => {
   //Font
   const [fontsLoaded] = useFonts({
@@ -164,7 +169,7 @@ navigation.navigate('WaitingRoom')
         colors={['#FF8552', 'transparent']}
         style={styles.background}
       />
-      <TouchableOpacity style={styles.headerExit}>
+      <TouchableOpacity style={styles.headerExit} onPress={() => handleLogout(navigation)}>
         <MaterialCommunityIcons name="exit-to-app" size={50} color="white" />
       </TouchableOpacity>
 

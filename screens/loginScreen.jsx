@@ -19,27 +19,64 @@ import {
   KiwiMaru_400Regular,
   KiwiMaru_500Medium,
 } from '@expo-google-fonts/kiwi-maru';
+import Toast from "react-native-toast-message";
+import { login } from "../api/restApi"; // Import the login API function
+import { useAuth } from "../contexts/AuthContext.js"; // Import AuthContext
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const LoginScreen = ({navigation}) => {
-  const [username, setUsername] = useState('');
-  const [pin, setPin] = useState('');
+export default function LoginScreen({ navigation }) {
+  const { loginAuth } = useAuth(); // Extract login function from AuthContext
+  const [username, setUsername] = useState("");
+  const [pin, setPin] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [pinError, setPinError] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    let valid = true;
+  
+    // Reset error messages
+    setUsernameError("");
+    setPinError("");
+  
+    // Validate username and PIN
     if (!username || !pin) {
-      Alert.alert('Error', 'Please enter both username and pin.');
-      navigation.navigate("Home"); //BENERIN INI YA TALLLLLLLLL
+      setUsernameError("Username is required.");
+      setPinError("PIN is required.");
+      valid = false;
     }
-
-    // Parse PIN to integer
-    const parsedPin = parseInt(pin, 10);
-
-    // Simulate login logic (replace with actual API call)
-    if (username === 'user' && parsedPin === 1234) {
-      Alert.alert('Success', `Welcome, ${username}!`);
-    } else {
-      Alert.alert('Error', 'Invalid username or pin.');
+  
+    if (valid) {
+      try {
+        await loginAuth(username, pin);
+  
+        Toast.show({
+          type: "success",
+          text1: "Login Successful",
+          text2: "Welcome back!",
+          position: "top",
+          visibilityTime: 1500,
+          topOffset: 50,
+        });
+  
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        });
+  
+      } catch (error) {
+        console.log(error.message);
+        Toast.show({
+          type: "error",
+          text1: "Login Failed",
+          text2: error.message || "Something went wrong.",
+          position: "top",
+          visibilityTime: 2000,
+          topOffset: 50,
+        });
+      }
     }
   };
+  
 
   const handleRegisterRedirect = () => {
     navigation.navigate('Register');
@@ -52,24 +89,21 @@ const LoginScreen = ({navigation}) => {
     KiwiMaru_500Medium,
   });
 
-  if (!fontsLoaded) {
-    return <Text>Loading fonts...</Text>;
-  }
-
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ImageBackground
-        source={require('../assets/Login Screen (1).png')} // Replace with your image URL
+        source={require('../assets/Login Screen (1).png')}
         style={styles.background}
       >
         <View style={styles.container}>
           <Text style={styles.title}>LOGIN</Text>
           <View style={styles.logoContainer}>
             <Image
-              source={require('../assets/Group 9.png')} // Replace with your image file path
-              style={styles.logoImage} // Apply styles to the logo image
+              source={require('../assets/Group 9.png')}
+              style={styles.logoImage}
             />
           </View>
+          <>
           <TextInput
             style={styles.input}
             placeholder="Username"
@@ -77,6 +111,11 @@ const LoginScreen = ({navigation}) => {
             value={username}
             onChangeText={setUsername}
           />
+          {usernameError ? (
+              <Text style={styles.errorText}>{usernameError}</Text>
+            ) : null}
+
+
           <TextInput
             style={styles.input}
             placeholder="PIN"
@@ -84,8 +123,12 @@ const LoginScreen = ({navigation}) => {
             secureTextEntry
             value={pin}
             onChangeText={setPin}
-            keyboardType="numeric" // Optional: Makes the keyboard show numbers
+            keyboardType="numeric"
           />
+          {pinError ? (
+              <Text style={styles.errorText}>{pinError}</Text>
+            ) : null} 
+          </>
           <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
             <View style={styles.buttonInnerShadow}>
               <Text style={styles.buttonText}>Sign in</Text>
@@ -195,6 +238,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 5, // Add space between "Don’t have an account?" and "Register here"
   },
+  errorText: {
+    fontSize: 12,
+    color: "red",
+    marginBottom: 16,
+  },
 });
-
-export default LoginScreen;

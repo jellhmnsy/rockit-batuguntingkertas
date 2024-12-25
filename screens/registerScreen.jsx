@@ -7,23 +7,59 @@ import {
   Image,
   StyleSheet,
   ImageBackground,
-  SafeAreaView,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import { Kavoon_400Regular } from "@expo-google-fonts/kavoon";
 import { KiwiMaru_400Regular } from "@expo-google-fonts/kiwi-maru";
 import { useFonts } from "@expo-google-fonts/kavoon";
-
+import { useNavigation } from "@react-navigation/native";
+import { register } from "../api/restApi";
 
 const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [pin, setPin] = useState("");
 
-  //tambahin validate
-  //ada package buat si expo nerima input number doang
+  const [usernameError, setUsernameError] = useState("");
+  const [pinError, setPinError] = useState("");
 
-  const handleRegister = () => {
-    // Logika untuk registrasi
-    console.log("Register with:", { username, pin });
+  const handleRegister = async () => {
+    let valid = true;
+
+    // Reset errors
+    setUsernameError("");
+    setPinError("");
+
+    // Validate username
+    if (username.length <= 3) {
+      setUsernameError("Username must be more than 3 characters.");
+      valid = false;
+    } else if (!username) {
+      setUsernameError("Username is required.");
+      valid = false;
+    }
+
+    // Validate pin
+    if (pin.length < 6) {
+      setPinError("PIN must be at least 6 characters.");
+      valid = false;
+    } else if (!pin) {
+      setPinError("PIN is required.");
+      valid = false;
+    }
+
+    // If form is valid, proceed to register
+    if (valid) {
+      try {
+        const response = await register(username, pin);
+        Alert.alert("Success", "Registration successful!", [
+          { text: "OK", onPress: () => navigation.navigate("Login") },
+        ]);
+      } catch (error) {
+        Alert.alert("Error", error.response?.data?.message || "Registration failed.");
+      }
+    }
   };
 
   const [fontsLoaded] = useFonts({
@@ -36,19 +72,19 @@ const RegisterScreen = ({ navigation }) => {
   }
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground
-        source={require("../assets/registration-screen.png")} // Ganti dengan path gambar cloud Anda
+        source={require("../assets/registration-screen.png")}
         style={styles.background}
         resizeMode="stretch"
       >
         <View style={styles.container}>
-          {/* Form Registrasi */}
           <View style={styles.formContainer}>
             <Text style={styles.title}>REGISTRASI</Text>
 
             {/* Logo */}
             <Image
-              source={require("../assets/logo.png")} // Ganti dengan path logo Anda
+              source={require("../assets/logo.png")}
               style={styles.logo}
               resizeMode="contain"
             />
@@ -61,8 +97,9 @@ const RegisterScreen = ({ navigation }) => {
               value={username}
               onChangeText={setUsername}
             />
+            {usernameError ? <Text style={styles.errorText}>{usernameError}</Text> : null}
 
-            {/* Input pin */}
+            {/* Input Pin */}
             <TextInput
               style={styles.input}
               placeholder="Pin"
@@ -70,9 +107,11 @@ const RegisterScreen = ({ navigation }) => {
               secureTextEntry
               value={pin}
               onChangeText={setPin}
+              keyboardType="numeric"
             />
+            {pinError ? <Text style={styles.errorText}>{pinError}</Text> : null}
 
-            {/* Tombol Register */}
+            {/* Register Button */}
             <TouchableOpacity
               style={styles.registerButton}
               onPress={handleRegister}
@@ -80,9 +119,9 @@ const RegisterScreen = ({ navigation }) => {
               <Text style={styles.registerButtonText}>Register</Text>
             </TouchableOpacity>
 
-            {/* Link ke Login */}
+            {/* Link to Login */}
             <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-              <Text style={styles.loginText}>Have account?</Text>
+              <Text style={styles.loginText}>Have an account?</Text>
               <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                 <Text style={styles.loginLink}> Login here</Text>
               </TouchableOpacity>
@@ -90,43 +129,24 @@ const RegisterScreen = ({ navigation }) => {
           </View>
         </View>
       </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: "center", // Pusatkan konten secara vertikal
-    alignItems: "center", // Pusatkan konten secara horizontal
+    justifyContent: "center",
+    alignItems: "center",
   },
   container: {
-    justifyContent: 'center',
+    justifyContent: "center",
     flex: 1,
     alignItems: "center",
   },
   formContainer: {
-  marginTop: "30%",
-  backgroundColor: "rgba(255, 255, 255, 0.41)", // Gunakan warna RGBA untuk opacity 50%
-  borderRadius: 20,
-  paddingVertical: 20,
-  paddingHorizontal: 30,
-  width: 286,
-  height: 485,
-  alignItems: "center",
-},
-formContainer: {
-  marginTop: "30%",
-  backgroundColor: "rgba(255, 255, 255, 0.5)", // Gunakan warna RGBA untuk opacity 50%
-  borderRadius: 20,
-  paddingVertical: 20,
-  paddingHorizontal: 30,
-  width: 286,
-  height: 485,
-  alignItems: "center",
-},
-formContainer: {
     marginTop: "30%",
-    backgroundColor: "rgba(255, 255, 255, 0.5)", // Gunakan warna RGBA untuk opacity 50%
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
     borderRadius: 20,
     paddingVertical: 20,
     paddingHorizontal: 30,
@@ -139,7 +159,7 @@ formContainer: {
     fontSize: 40,
     fontWeight: "bold",
     color: "#000",
-    marginBottom: 20, // Gunakan font sesuai gambar
+    marginBottom: 20,
   },
   logo: {
     width: 60,
@@ -152,7 +172,7 @@ formContainer: {
     backgroundColor: "#F2F2F2",
     paddingHorizontal: 15,
     height: 39,
-    width : 250,
+    width: 250,
     marginBottom: 15,
     color: "#000",
     fontFamily: "KiwiMaru_400Regular",
@@ -164,7 +184,7 @@ formContainer: {
     paddingHorizontal: 35,
     borderRadius: 80,
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: "white",
     marginTop: 10,
   },
   registerButtonText: {
@@ -184,6 +204,11 @@ formContainer: {
     fontSize: 15,
     fontWeight: "bold",
     fontFamily: "KiwiMaru_400Regular",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginBottom: 5,
   },
 });
 

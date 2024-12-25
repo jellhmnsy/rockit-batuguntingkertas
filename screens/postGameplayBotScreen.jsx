@@ -19,6 +19,11 @@ const PostGameScreen = ({ route, navigation }) => {
     KiwiMaru_400Regular,
   });
 
+  const handleMenuPress = () => {
+    navigation.navigate("Home"); // Navigate to Home screen
+  };
+
+
   if (!fontsLoaded) {
     return <Text>Loading fonts...</Text>;
   }
@@ -45,21 +50,13 @@ const PostGameScreen = ({ route, navigation }) => {
             </View>
           </View>
         </View>
-        {/* <TouchableOpacity style={styles.buttonGameOver} onPress={{}}>
-          <Text style={styles.buttonTextGameOver}>Play Again</Text>
-        </TouchableOpacity> */}
-        {/* <TouchableOpacity style={styles.buttonGameOver} onPress={{}}>
-          <Text style={styles.buttonTextGameOver}>Menu</Text>
-        </TouchableOpacity> */}
         <TouchableOpacity
-          style={styles.buttonGameOverMenu}
-          //   onPress={{}}
+          style={styles.buttonGameOverMenu} onPress={handleMenuPress}
         >
           <Text style={styles.buttonTextGameOver}>Menu</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonGameOverLeaderboard}
-          //   onPress={() => navigation.navigate("Game")}
         >
           <Text style={styles.buttonTextGameOver}>Leaderboard</Text>
         </TouchableOpacity>
