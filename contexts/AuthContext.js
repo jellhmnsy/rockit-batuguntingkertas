@@ -2,22 +2,30 @@ import React, { createContext, useState, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { login } from '../api/restApi';
 
-const AuthContext = createContext(); //untuk membuat konteks yang memungkinkan data tertentu tersedia untuk seluruh komponen yang ada dalam hierarki
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  const loginAuth =  async(username,pin) => {
+  const loginAuth = async (username, pin) => {
     try {
-        const response = await login(username, pin);
-        console.log(response.data.token)
-        setUser( response.data.token );
-        AsyncStorage.setItem('accessToken', response.data.token);
+      const response = await login(username, pin);
+      const { access_token } = response;
+  
+      if (access_token) {
+        console.log('Access Token:', access_token);
+        setUser(access_token);
+        await AsyncStorage.setItem('accessToken', access_token);
+        return true;
+      } else {
+        throw new Error('Access token not found in response');
+      }
+    
     } catch (error) {
-        console.log(error.response.data)
+      throw new Error(error.response?.data?.message || error.message || 'Login failed');
     }
-
-  };
+  };  
+  
 
   const logout = async () => {
     setUser(null);

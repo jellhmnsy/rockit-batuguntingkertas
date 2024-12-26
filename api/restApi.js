@@ -13,7 +13,7 @@ const api = axios.create({
 
 const apii = axios.create({
   baseURL: 'http://13.239.139.158',
-  timeout: 5000, // Waktu maksimal request (opsional)
+  timeout: 5000, 
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -23,13 +23,16 @@ const apii = axios.create({
 export const login = async (username, pin) => {
   try {
     const response = await api.post('/auth/login', { 
-        username : username, 
-        pin : pin });
+      username: username, 
+      pin: pin 
+    });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Login failed');
+    const errorMessage = error.response?.data?.message || 'Login failed';
+    throw new Error(errorMessage);
   }
 };
+
 
 export const register = async (username, pin) => {
   try {
