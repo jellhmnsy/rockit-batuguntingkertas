@@ -18,6 +18,7 @@ const SplashScreen = ({ navigation }) => {
     <ImageBackground
       source={require('../assets/Splash Screen.png')}  // Your background image
       style={styles.background}  // Make sure the image covers the whole screen
+      resizeMode='stretch'
     >
       <View style={styles.container}>
         {/* You can add any text or components over the background image */}

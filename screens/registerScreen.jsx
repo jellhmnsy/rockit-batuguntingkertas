@@ -157,7 +157,6 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Kavoon_400Regular",
     fontSize: 40,
-    fontWeight: "bold",
     color: "#000",
     marginBottom: 20,
   },
@@ -171,7 +170,6 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#F2F2F2",
     paddingHorizontal: 15,
-    height: 39,
     width: 250,
     marginBottom: 15,
     color: "#000",
@@ -189,7 +187,6 @@ const styles = StyleSheet.create({
   },
   registerButtonText: {
     color: "#FFFFFF",
-    fontWeight: "bold",
     fontSize: 24,
     fontFamily: "KiwiMaru_400Regular",
   },
@@ -202,8 +199,8 @@ const styles = StyleSheet.create({
   loginLink: {
     color: "#046865",
     fontSize: 15,
-    fontWeight: "bold",
-    fontFamily: "KiwiMaru_400Regular",
+    fontFamily: "KiwiMaru_500Medium",
+    // fontFamily: "KiwiMaru_400Regular",
   },
   errorText: {
     color: "red",

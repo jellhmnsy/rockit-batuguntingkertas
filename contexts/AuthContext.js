@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [data, setData] = useState(null);
 
   const loginAuth = async (username, pin) => {
     try {
@@ -30,9 +31,10 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setUser(null);
     await AsyncStorage.removeItem('accessToken');
+    await AsyncStorage.removeItem('data');
   };
   return (
-    <AuthContext.Provider value={{ user, loginAuth, logout }}>
+    <AuthContext.Provider value={{ user, data, loginAuth, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,5 @@
 import React from "react";
+import { AudioProvider } from "./screens/AudioContext";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import SplashScreen from "./screens/splashScreen";
@@ -15,11 +16,13 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
-    </AuthProvider>
+    <AudioProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </AuthProvider>
+    </AudioProvider>
   );
 };
 
