@@ -59,29 +59,27 @@ const GameplayScreen = () => {
       resizeMode="stretch"
     >
         {gameOver ? (
-          <>
-          </>
-        // Layar Penutup
-        // <View style={styles.endScreen}>
-        //   <Text style={styles.resultText}>{resultMessage}</Text>
-        //   <View style={styles.scoreContainer}>
-        //     <Text style={styles.scoreTitle}>A vs B</Text>
-        //     <View style={styles.scores}>
-        //       <View style={styles.scoreBox}>
-        //         <Text style={styles.scoreText}>{scoreA}</Text>
-        //       </View>
-        //       <View style={styles.scoreBox}>
-        //         <Text style={styles.scoreText}>{scoreB}</Text>
-        //       </View>
-        //     </View>
-        //   </View>
-        //   <TouchableOpacity style={styles.menuButton} onPress={handleRestart}>
-        //     <Text style={styles.menuButtonText}>Menu</Text>
-        //   </TouchableOpacity>
-        //   <TouchableOpacity style={styles.leaderboardButton}>
-        //     <Text style={styles.menuButtonText}>Leaderboard</Text>
-        //   </TouchableOpacity>
-        // </View>
+
+        <View style={styles.endScreen}>
+          {/* <Text style={styles.resultText}>{resultMessage}</Text>
+          <View style={styles.scoreContainer}>
+            <Text style={styles.scoreTitle}>A vs B</Text>
+            <View style={styles.scores}>
+              <View style={styles.scoreBox}>
+                <Text style={styles.scoreText}>{scoreA}</Text>
+              </View>
+              <View style={styles.scoreBox}>
+                <Text style={styles.scoreText}>{scoreB}</Text>
+              </View>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.menuButton} onPress={handleRestart}>
+            <Text style={styles.menuButtonText}>Menu</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.leaderboardButton}>
+            <Text style={styles.menuButtonText}>Leaderboard</Text>
+          </TouchableOpacity> */}
+        </View>
       ) : (
 
       <View style={styles.container}>
@@ -374,7 +372,7 @@ const styles = StyleSheet.create({
     zIndex: 10, // Overlay di atas layar, tapi di bawah tombol
   },
   buttonActive: {
-    backgroundColor: "#046865",
+    backgroundColor: "#FF8552",
   },
   
   buttonIconHand: {

@@ -52,36 +52,7 @@ export const getUserInfo = async () => {
   }
 }
 
-export const getGameToken = async () => {
-  try {
-    const accessToken = await AsyncStorage.getItem('accessToken')
-    console.log("test",accessToken)
-    const response = await api.post('/games',{}, { 
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken
-      }
-     });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.error || 'Failed to get game token');
-  }
-};
 
-export const postJoinGame = async (token) => {
-  try {
-    const accessToken = await AsyncStorage.getItem('accessToken')
-    const response = await api.put(`/games/${token}/join`,{}, { 
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken
-      }
-     });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.error || 'Failed to get game token');
-  }
-};
 
 export const postStartGame = async (token) => {
   try {
@@ -148,6 +119,37 @@ export const postResultGame = async (token,result) => {
   }
 
 }
+
+export const getGameToken = async () => {
+  try {
+    const accessToken = await AsyncStorage.getItem('accessToken')
+    console.log("test",accessToken)
+    const response = await api.post('/games',{}, { 
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken
+      }
+     });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to get game token');
+  }
+};
+
+export const postJoinGame = async (token) => {
+  try {
+    const accessToken = await AsyncStorage.getItem('accessToken')
+    const response = await api.put(`/games/${token}/join`,{}, { 
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken
+      }
+     });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to get game token');
+  }
+};
 
 
 export default api;

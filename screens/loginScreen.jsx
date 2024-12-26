@@ -12,21 +12,20 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-// import AppLoading from 'expo-app-loading';
 import { Kavoon_400Regular } from '@expo-google-fonts/kavoon';
-import {
-  KiwiMaru_300Light,
-  KiwiMaru_400Regular,
-  KiwiMaru_500Medium,
-} from '@expo-google-fonts/kiwi-maru';
+import { KiwiMaru_300Light } from '@expo-google-fonts/kiwi-maru';
+import { KiwiMaru_400Regular } from '@expo-google-fonts/kiwi-maru';
+import { KiwiMaru_500Medium } from '@expo-google-fonts/kiwi-maru';
+
+
 import Toast from "react-native-toast-message";
-import { login } from "../api/restApi"; // Import the login API function
-import { useAuth } from "../contexts/AuthContext.js"; // Import AuthContext
+import { login } from "../api/restApi";
+import { useAuth } from "../contexts/AuthContext.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen({ navigation }) {
-  const { loginAuth,user } = useAuth(); // Extract login function from AuthContext
+  const {  loginAuth,user  } = useAuth(); // Extract login function from AuthContext
   const [username, setUsername] = useState("");
   const [pin, setPin] = useState("");
   const [usernameError, setUsernameError] = useState("");
@@ -40,50 +39,54 @@ export default function LoginScreen({ navigation }) {
   }, [user]);
   const handleLogin = async () => {
     let valid = true;
-  
+
     // Reset error messages
     setUsernameError("");
     setPinError("");
-  
+
     // Validate username and PIN
-    if (!username || !pin) {
+    if (!username) {
       setUsernameError("Username is required.");
+      valid = false;
+    }
+    if (!pin) {
       setPinError("PIN is required.");
       valid = false;
     }
-  
+
     if (valid) {
       try {
-        await loginAuth(username, pin);
-  
-        Toast.show({
-          type: "success",
-          text1: "Login Successful",
-          text2: "Welcome back!",
-          position: "top",
-          visibilityTime: 1500,
-          topOffset: 50,
-        });
-  
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Home" }],
-        });
-  
+        const success = await loginAuth(username, pin);
+
+        if (success) {
+          Alert.alert(
+            "Login Successful",
+            "Welcome back!",
+            [{ text: "OK", onPress: () => navigation.reset({ index: 0, routes: [{ name: "Home" }] }) }]
+          );
+        }
+
       } catch (error) {
-        console.log(error.message);
-        Toast.show({
-          type: "error",
-          text1: "Login Failed",
-          text2: error.message || "Something went wrong.",
-          position: "top",
-          visibilityTime: 2000,
-          topOffset: 50,
-        });
+        console.log('Error occurred:', error.message);
+
+        // Check for invalid username or PIN
+        if (error.message.includes("invalid username or PIN")) {
+          Alert.alert(
+            "Login Failed",
+            "Invalid username or PIN. Please try again.",
+            [{ text: "OK" }]
+          );
+        } else {
+          // General error fallback
+          Alert.alert(
+            "Login Failed",
+            error.message || "Something went wrong.",
+            [{ text: "OK" }]
+          );
+        }
       }
     }
   };
-  
 
   const handleRegisterRedirect = () => {
     navigation.navigate('Register');
@@ -96,11 +99,12 @@ export default function LoginScreen({ navigation }) {
     KiwiMaru_500Medium,
   });
 
-  return (
+  return fontsLoaded ? (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ImageBackground
         source={require('../assets/Login Screen (1).png')}
         style={styles.background}
+        resizeMode='stretch'
       >
         <View style={styles.container}>
           <Text style={styles.title}>LOGIN</Text>
@@ -111,30 +115,29 @@ export default function LoginScreen({ navigation }) {
             />
           </View>
           <>
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor="#aaa"
-            value={username}
-            onChangeText={setUsername}
-          />
-          {usernameError ? (
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor="#aaa"
+              value={username}
+              onChangeText={setUsername}
+            />
+            {usernameError ? (
               <Text style={styles.errorText}>{usernameError}</Text>
             ) : null}
 
-
-          <TextInput
-            style={styles.input}
-            placeholder="PIN"
-            placeholderTextColor="#aaa"
-            secureTextEntry
-            value={pin}
-            onChangeText={setPin}
-            keyboardType="numeric"
-          />
-          {pinError ? (
+            <TextInput
+              style={styles.input}
+              placeholder="PIN"
+              placeholderTextColor="#aaa"
+              secureTextEntry
+              value={pin}
+              onChangeText={setPin}
+              keyboardType="numeric"
+            />
+            {pinError ? (
               <Text style={styles.errorText}>{pinError}</Text>
-            ) : null} 
+            ) : null}
           </>
           <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
             <View style={styles.buttonInnerShadow}>
@@ -154,26 +157,30 @@ export default function LoginScreen({ navigation }) {
         </View>
       </ImageBackground>
     </TouchableWithoutFeedback>
+  ) : (
+    <Text>Loading fonts...</Text>
   );
-};
+}
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: undefined,
+    height: undefined,
+    resizeMode: 'cover',
   },
   container: {
     backgroundColor: 'rgba(255, 255, 255, 0.41)', // Semi-transparent background
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 20,
     alignItems: 'center',
     width: 286,
     height: 485,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 40,
     marginBottom: 20,
     fontFamily: 'Kavoon_400Regular',
   },
@@ -189,8 +196,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   input: {
-    width: 265,
-    height: 39,
+    width: "100%",
     backgroundColor: '#F5F5F5',
     paddingHorizontal: 10,
     marginBottom: 15,
@@ -241,9 +247,9 @@ const styles = StyleSheet.create({
   },
   registerText: {
     color: '#FF4500',
-    fontFamily: 'KiwiMaru_400Regular',
     fontSize: 15,
     marginTop: 5, // Add space between "Don’t have an account?" and "Register here"
+    fontFamily: 'KiwiMaru_400Regular',
   },
   errorText: {
     fontSize: 12,

@@ -40,7 +40,7 @@ export const GameProvider = ({ children }) => {
   const [roundResult, setRoundResult] = useState("");
 	useEffect(() => {
 		if (!token) return;
-		setStatus("Waiting");
+
 		const pusher = new Pusher("5ffd502396a114a03464", { cluster: "ap1" });
 		const channel = pusher.subscribe(`game-${token}`);
 
@@ -48,8 +48,11 @@ export const GameProvider = ({ children }) => {
 		channel.bind("room-start", handleRoomStart);
 		channel.bind("round-move", handlePlayerMove);
 		channel.bind("round-end", handlePlayerFinish);
-    channel.bind('room-end', handleGameEnd);
-
+    // channel.bind('room-end', handleGameEnd);
+    // const handleGameEnd = () => {
+    //   channel.unbind_all();
+    //   channel.unsubscribe();
+    // }
 		return () => {
 			channel.unbind_all();
 			channel.unsubscribe();
@@ -75,9 +78,7 @@ export const GameProvider = ({ children }) => {
 
 	const handleGameEnd = () => {
     setStatus('Finished');
-		setScoreA(0);
-		setScoreB(0);
-		setRound(1);
+
   };
 
 	useEffect(() => {
@@ -181,7 +182,11 @@ export const GameProvider = ({ children }) => {
 	};
 
 	const handleRoomStart = () => {
+    setScoreA(0);
+		setScoreB(0);
+		setRound(1);
 		setGameOver(false);
+
 		setStatus("Started");
 	};
 
@@ -197,15 +202,19 @@ export const GameProvider = ({ children }) => {
 
 		let playerCount = player1 ? (player2 ? 2 : 1) : 0;
 		setPlayersJoined(playerCount);
+    setScoreA(0);
+		setScoreB(0);
+		setRound(1);
 		setStatus("wait");
 	};
 
 	const getToken = async () => {
 		try {
 			const response = await getGameToken();
-			console.log(response);
 			setPlayersJoined(1);
-			setToken(response.data.token);
+			setToken(response.data.token, "token"); 
+      setStatus("wait");
+
 		} catch (error) {
 			console.log(error);
 		}
@@ -217,13 +226,13 @@ export const GameProvider = ({ children }) => {
 			
 			if (response.success) {
 				setToken(gameToken);
-			setPlayersJoined(2);
+			  setPlayersJoined(2);
 
 			return response;
 			}
 
 		} catch (error) {
-			console.log(error);
+			alert(error.message);
 		}
 	};
 
@@ -237,6 +246,7 @@ export const GameProvider = ({ children }) => {
 
 	const resetGameToken = async () => {
 		setToken(null);
+    setStatus(null);
 	};
 
 	return (

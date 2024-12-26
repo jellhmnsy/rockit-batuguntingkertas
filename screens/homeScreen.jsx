@@ -19,6 +19,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getUserInfo } from '../api/restApi';
 
 
+
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
 const slideList = [
@@ -101,6 +102,8 @@ const HomeScreen = ({navigation}) => {
   const [index, setIndex] = useState(0);
   const flatListRef = useRef(null);
 
+
+
   const { joinGame, token:gameToken, resetGameToken } = useGame();
 
   const {userId,logout,user,setUserId} = useAuth()
@@ -163,20 +166,20 @@ const HomeScreen = ({navigation}) => {
       alert('Please enter a token');
       return;
     }
-
+    
     try {
       const response = await joinGame(token);
       console.log(response,'join')
-      if (response.success ) {
+      if (response ) {
         navigation.navigate('WaitingRoom');
       }
     
     } catch (error) {
-      console.log(error);
+      alert(error.message);
     }
     
-    // Handle token submission logic here (e.g., sen  d to server)
-    console.log('Submitted Token:', token, 'Response:', response);
+    // Handle token submission logic here (e.g., sen    d to server)
+    console.log('Submitted Token:', token, 'Response:', response, 'Response:', response);
     handleCloseModal();
   };
 
@@ -184,6 +187,9 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     resetGameToken();
   },[]);
+
+
+
 
   const handleCreate = () => {
     resetGameToken();
