@@ -31,25 +31,23 @@ const RegisterScreen = ({ navigation }) => {
     setUsernameError("");
     setPinError("");
 
-    // Validate username
-    if (username.length <= 3) {
-      setUsernameError("Username must be more than 3 characters.");
-      valid = false;
-    } else if (!username) {
+    if (!username) {
       setUsernameError("Username is required.");
       valid = false;
+    } else if (username.length <= 3) {
+      setUsernameError("Username must be more than 3 characters.");
+      valid = false;
     }
 
-    // Validate pin
-    if (pin.length < 6) {
-      setPinError("PIN must be at least 6 characters.");
-      valid = false;
-    } else if (!pin) {
+    if (!pin) {
       setPinError("PIN is required.");
       valid = false;
+    } else if (pin.length < 6) {
+      setPinError("PIN must be at least 6 characters.");
+      valid = false;
     }
 
-    // If form is valid, proceed to register
+    
     if (valid) {
       try {
         const response = await register(username, pin);
@@ -57,10 +55,23 @@ const RegisterScreen = ({ navigation }) => {
           { text: "OK", onPress: () => navigation.navigate("Login") },
         ]);
       } catch (error) {
-        Alert.alert("Error", error.response?.data?.message || "Registration failed.");
+        if (error.message) {
+          // username already exists
+          if (error.message === "Username already exists.") {
+            Alert.alert("Error", "Username already exists.");
+          } else {
+            // Handle other errors
+            const errorMessage = error.message || "Registration failed.";
+            Alert.alert("Error", errorMessage);
+          }
+        } else {
+          console.log("Network error or other unexpected error:", error.message);
+          Alert.alert("Error", "An unexpected error occurred. Please check your network connection.");
+        }
       }
     }
   };
+   
 
   const [fontsLoaded] = useFonts({
     Kavoon_400Regular,
