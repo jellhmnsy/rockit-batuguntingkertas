@@ -71,6 +71,31 @@ export const getLeaderboard = async () => {
   }
 };
 
+export const getUserInfo = async () => {
+  try {
+    console.log('Fetching token from storage...');
+    const token = await AsyncStorage.getItem('accessToken'); 
+    console.log('Token fetched:', token);
+    if (!token) throw new Error('No token found'); 
+
+    console.log('Fetching user info...');
+    const response = await apii.get('/users/me', {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+    console.log('User info fetched:', response.data);
+    return response.data; 
+  } catch (error) {
+    console.error('Fetch User Info Error:', error.response?.data || error.message);
+    if (error.response?.status === 403) {
+      console.warn('Unauthorized access - Invalid Token');
+    }
+    throw error;
+  }
+};
+
+
 // export const getUserLeaderboard = async () => {
 //   try {
 //     console.log('Fetching token from storage...');
