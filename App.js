@@ -1,5 +1,4 @@
 import React from "react";
-import { AudioProvider } from "./screens/AudioContext";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import SplashScreen from "./screens/splashScreen";
@@ -11,18 +10,19 @@ import PostGameScreen from "./screens/postGameplayBotScreen";
 import RegisterScreen from "./screens/registerScreen";
 import HomeScreen from "./screens/homeScreen";
 import { AuthProvider } from './contexts/AuthContext';
+import { GameProvider } from "./contexts/GameContext";
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <AudioProvider>
-      <AuthProvider>
-        <NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <GameProvider>
           <AppNavigator />
-        </NavigationContainer>
-      </AuthProvider>
-    </AudioProvider>
+        </GameProvider>
+      </NavigationContainer>
+    </AuthProvider>
   );
 };
 
