@@ -11,11 +11,12 @@ import RegisterScreen from "./screens/registerScreen";
 import HomeScreen from "./screens/homeScreen";
 import { AuthProvider } from './contexts/AuthContext';
 import { GameProvider } from "./contexts/GameContext";
-
+import { AudioProvider } from "./screens/audioContext";
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
+    <AudioProvider>
     <AuthProvider>
       <NavigationContainer>
         <GameProvider>
@@ -23,6 +24,7 @@ const App = () => {
         </GameProvider>
       </NavigationContainer>
     </AuthProvider>
+    </AudioProvider>
   );
 };
 
