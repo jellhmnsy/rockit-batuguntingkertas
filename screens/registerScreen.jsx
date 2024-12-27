@@ -37,6 +37,9 @@ const RegisterScreen = ({ navigation }) => {
     } else if (username.length <= 3) {
       setUsernameError("Username must be more than 3 characters.");
       valid = false;
+    } else if (username.length >= 8) {
+      setUsernameError("Username must less than 8 characters.");
+      valid = false;
     }
 
     if (!pin) {

@@ -9,6 +9,7 @@ const AuthContext = createContext(); //untuk membuat konteks yang memungkinkan d
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userId,setUserId] = useState(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     AsyncStorage.getItem('accessToken').then((token) => {
@@ -36,29 +37,39 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const loginAuth =  async(username,pin) => {
+  const loginAuth = async (username, pin) => {
     try {
-        const response = await login(username, pin);
-        console.log(response.data.token, response.data.id)
-        setUser( response.data.token );
-        setUserId( response.data.id );
-        AsyncStorage.setItem('accessToken', response.data.token);
+      const response = await login(username, pin);
+      const { access_token } = response;
+  
+      if (access_token) {
+        console.log('Access Token:', access_token, 'User ID:', response.data.id);
+        setUser(access_token);
+        setUserId(response.data.id);
+        await AsyncStorage.setItem('accessToken', access_token);
+        return true;
+      } else {
+        throw new Error('Access token not found in response');
+      }
+    
     } catch (error) {
-        console.log(error.response.data)
+      throw new Error(error.response?.data?.message || error.message || 'Login failed');
     }
-
-  };
+  };  
+  
 
   const logout = async () => {
     setUser(null);
     setUserId(null);
     await AsyncStorage.removeItem('accessToken');
+    await AsyncStorage.removeItem('data');
   };
   return (
-    <AuthContext.Provider value={{ user,userId, loginAuth, logout,setUserId }}>
+    <AuthContext.Provider value={{ user, data, setUserId, userId,loginAuth, logout }}>
       {children}
     </AuthContext.Provider>
   );
+  
 };
 
 export const useAuth = () => useContext(AuthContext);
