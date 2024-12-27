@@ -22,14 +22,21 @@ import Toast from "react-native-toast-message";
 import { login } from "../api/restApi";
 import { useAuth } from "../contexts/AuthContext.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen({ navigation }) {
-  const { loginAuth } = useAuth();
+  const {  loginAuth,user  } = useAuth(); // Extract login function from AuthContext
   const [username, setUsername] = useState("");
   const [pin, setPin] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [pinError, setPinError] = useState("");
-
+  const navigationRef = useNavigation();
+  useEffect(() => {
+  
+    if (user !== null) {
+      navigationRef.navigate('Home');
+    }
+  }, [user]);
   const handleLogin = async () => {
     let valid = true;
 
