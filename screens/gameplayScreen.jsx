@@ -17,10 +17,10 @@ import { useNavigation } from "@react-navigation/native";
 
 const GameplayScreen = () => {
   const {
-    gameOver, 
-    resultMessage, 
-    scoreA, 
-    scoreB, 
+    gameOver,
+    resultMessage,
+    scoreA,
+    scoreB,
     handleRestart,
     timer,
     playerChoice,
@@ -31,17 +31,17 @@ const GameplayScreen = () => {
     setUserId,
     roundResult,
     showModal,
-    setShowModal
+    setShowModal,
   } = useGame();
 
   const navigation = useNavigation();
   useEffect(() => {
     if (status === "Finished") {
       setTimeout(() => {
-        navigation.navigate("PostGame",{scoreA, scoreB});
+        navigation.navigate("PostGame", { scoreA, scoreB });
       }, 3000);
     }
-  },[status]);
+  }, [status]);
 
   const [fontsLoaded] = useFonts({
     Kavoon_400Regular,
@@ -58,43 +58,46 @@ const GameplayScreen = () => {
       style={styles.background}
       resizeMode="stretch"
     >
-        {gameOver ? (
+      <View style={styles.container}>
+        <>
+        {timer > 0 && (
+          <View style={styles.overlay}>
+            <Text style={styles.timerText}>{timer}</Text>
+          </View>
+        )}
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.lifeText}></Text>
+        </View>
 
-        <View style={styles.endScreen}>
-          {/* <Text style={styles.resultText}>{resultMessage}</Text>
-          <View style={styles.scoreContainer}>
-            <Text style={styles.scoreTitle}>A vs B</Text>
-            <View style={styles.scores}>
+        {/* Score */}
+        <View style={styles.scoreContainer}>
+          <View style={styles.scoreTitle}>
+            <View style={styles.playerContainer}>
+              <Text style={styles.playerText}>You</Text>
+            </View>
+            <View style={styles.vsContainer}>
+              <Text style={styles.vsText}>vs</Text>
+            </View>
+            <View style={styles.botContainer}>
+              <Text style={styles.botText}>Opponent</Text>
+            </View>
+          </View>
+          <View style={styles.scores}>
+            <View style={styles.scoreBoxPlayer}>
               <View style={styles.scoreBox}>
                 <Text style={styles.scoreText}>{scoreA}</Text>
               </View>
+            </View>
+            <View style={styles.scoreBoxBot}>
               <View style={styles.scoreBox}>
                 <Text style={styles.scoreText}>{scoreB}</Text>
               </View>
             </View>
           </View>
-          <TouchableOpacity style={styles.menuButton} onPress={handleRestart}>
-            <Text style={styles.menuButtonText}>Menu</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.leaderboardButton}>
-            <Text style={styles.menuButtonText}>Leaderboard</Text>
-          </TouchableOpacity> */}
-        </View>
-      ) : (
-
-      <View style={styles.container}>
-              {timer > 0 && (
-        <View style={styles.overlay}>
-          <Text style={styles.timerText}>{timer}</Text>
-        </View>
-      )}
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.lifeText}>Life</Text>
         </View>
 
-        {/* Score */}
-        <View style={styles.scoreContainer}>
+        {/* <View style={styles.scoreContainer}>
           <Text style={styles.scoreTitle}>A vs B</Text>
           <View style={styles.scores}>
             <View style={styles.scoreBox}>
@@ -104,7 +107,7 @@ const GameplayScreen = () => {
               <Text style={styles.scoreText}>{scoreB}</Text>
             </View>
           </View>
-        </View>
+        </View> */}
 
         {/* Hands */}
         {/* Render hand left */}
@@ -152,7 +155,10 @@ const GameplayScreen = () => {
         {/* Buttons */}
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
-            style={[styles.button, playerChoice === "Scissors" && styles.buttonActive]}
+            style={[
+              styles.button,
+              playerChoice === "Scissors" && styles.buttonActive,
+            ]}
             onPress={() => handleChoice("Scissors")}
           >
             <Image
@@ -161,7 +167,10 @@ const GameplayScreen = () => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, playerChoice === "Rock" && styles.buttonActive]}
+            style={[
+              styles.button,
+              playerChoice === "Rock" && styles.buttonActive,
+            ]}
             onPress={() => handleChoice("Rock")}
           >
             <Image
@@ -170,7 +179,10 @@ const GameplayScreen = () => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, playerChoice === "Paper" && styles.buttonActive]}
+            style={[
+              styles.button,
+              playerChoice === "Paper" && styles.buttonActive,
+            ]}
             onPress={() => handleChoice("Paper")}
           >
             <Image
@@ -179,15 +191,15 @@ const GameplayScreen = () => {
             />
           </TouchableOpacity>
         </View>
-        </View>
-      )
-      }
-            {/* Modal Hasil */}
-            <Modal
+        </>
+      </View>
+      
+      {/* Modal Hasil */}
+      <Modal
         visible={showModal}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setShowModal(false)} 
+        onRequestClose={() => setShowModal(false)}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -232,8 +244,8 @@ const styles = StyleSheet.create({
     zIndex: 5, // Pastikan di atas elemen lain
   },
   container: {
-    flex: 1,
-    paddingHorizontal: 20,
+    // flex: 1,
+    paddingHorizontal: 40,
     paddingTop: 40,
   },
   header: {
@@ -257,32 +269,71 @@ const styles = StyleSheet.create({
     fontFamily: "KiwiMaru_400Regular",
   },
   scoreContainer: {
-    alignItems: "center",
+    alignItems: "start",
     marginBottom: 30,
-    right: 100,
   },
   scoreTitle: {
     fontSize: 40,
-    fontWeight: "bold",
     color: "#000",
     marginBottom: 10,
     fontFamily: "Kavoon_400Regular",
+    flexDirection: "row",
+    width: "auto",
+  },
+  playerContainer: {
+    flex: 3,
+  },
+  vsContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  botContainer: {
+    flex: 3,
+  },
+  playerText: {
+    fontSize: 30,
+    color: "#000",
+    fontFamily: "Kavoon_400Regular",
+    textAlign: "right",
+    marginRight: 5,
+  },
+  botText: {
+    fontSize: 30,
+    color: "#000",
+    fontFamily: "Kavoon_400Regular",
+    textAlign: "left",
+    marginLeft: 5,
+  },
+  vsText: {
+    fontSize: 28,
+    color: "#000",
+    fontFamily: "Kavoon_400Regular",
+    textAlign: "center",
+    textAlignVertical: "bottom",
   },
   scores: {
     flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "center",
+    // flex: 1,
   },
   scoreBox: {
-    width: 60,
-    height: 60,
     backgroundColor: "#FFF",
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: 10,
-    marginLeft: 40,
+    marginHorizontal: 40,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+    // marginLeft: 40,
+    width: "auto",
+    alignContent: "center",
+  },
+  scoreBoxPlayer: {
+    flexShrink: 1,
+  },
+  scoreBoxBot: {
+    flexShrink: 1,
   },
   scoreText: {
     fontSize: 40,
-    fontWeight: "bold",
     color: "#000",
     fontFamily: "Kavoon_400Regular",
   },
@@ -292,50 +343,50 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
-  handLeftRock: {
-    width: 275,
-    height: 137,
-    position: "absolute",
-    left: 20,
-    bottom: 300,
-  },
-  handLeftPaper: {
-    width: 275,
-    height: 137,
-    position: "absolute",
-    left: 20,
-    bottom: 300,
-  },
-  handLeftScissors: {
-    transform: "scaleX(-1)",
-    width: 275,
-    height: 114,
-    position: "absolute",
-    left: 20,
-    bottom: 300,
-  },
-  handRightScissors: {
-    width: 275,
-    height: 114,
-    position: "absolute",
-    left: 100,
-    bottom: 50,
-  },
   handRightRock: {
+    width: 275,
+    height: 137,
+    position: "absolute",
+    bottom: 150,
+    right: 100,
+  },
+  handLeftRock: {
     transform: "scaleX(-1)",
     width: 275,
     height: 137,
     position: "absolute",
-    left: 100,
-    bottom: 50,
+    left: 140,
+    bottom: 150,
   },
   handRightPaper: {
+    width: 275,
+    height: 137,
+    position: "absolute",
+    bottom: 150,
+    right: 100,
+  },
+  handLeftPaper: {
     transform: "scaleX(-1)",
     width: 275,
     height: 137,
     position: "absolute",
-    left: 100,
-    bottom: 50,
+    left: 140,
+    bottom: 150,
+  },
+  handRightScissors: {
+    transform: "scaleX(-1)",
+    width: 275,
+    height: 114,
+    position: "absolute",
+    bottom: 150,
+    right: 100,
+  },
+  handLeftScissors: {
+    width: 275,
+    height: 114,
+    position: "absolute",
+    left: 140,
+    bottom: 150,
   },
   timerContainer: {
     flex: 1,
@@ -374,7 +425,7 @@ const styles = StyleSheet.create({
   buttonActive: {
     backgroundColor: "#FF8552",
   },
-  
+
   buttonIconHand: {
     width: 50.36,
     height: 70.07,
@@ -392,13 +443,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", 
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    width: 331, 
+    width: 331,
     height: 259,
     backgroundColor: "#fff",
-    borderRadius: 125, 
+    borderRadius: 125,
     alignItems: "center",
     justifyContent: "center",
     elevation: 5,
