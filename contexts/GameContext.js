@@ -38,6 +38,9 @@ export const GameProvider = ({ children }) => {
 	const [resultMessage, setResultMessage] = useState(""); // Pesan hasil akhir
   const {userId} = useAuth();
   const [roundResult, setRoundResult] = useState("");
+	const [username, setUsername] = useState(null);
+	const [opponentUsername, setOpponentUsername] = useState(null);
+
 	useEffect(() => {
 		if (!token) return;
 
@@ -58,8 +61,9 @@ export const GameProvider = ({ children }) => {
 			channel.unsubscribe();
 		};
 	}, [token]);
+	console.log(userId,"userid")
 	const handlePlayerMove = (data) => {
-    console.log(data,"move pusher");
+    console.log(data,"move pusher",userId);
 		const isPlayer1 = data.data.player_1_id === userId;
     console.log(isPlayer1,userId);
 
@@ -100,8 +104,6 @@ export const GameProvider = ({ children }) => {
 			}
 		}
 		else{
-			setScoreA(0);
-			setScoreB(0);
 			setRound(1);
 			clearInterval(timerRef.current);
 		}
@@ -110,6 +112,8 @@ export const GameProvider = ({ children }) => {
 	}, [timer,gameOver]);
 
 	const determineWinner = (player, opponent) => {
+		if (player === "None") return "lose";
+		if (opponent === "None") return "win";
 		if (player === opponent) return "draw";
 		if (
 			(player === "Rock" && opponent === "Scissors") ||
@@ -155,8 +159,7 @@ export const GameProvider = ({ children }) => {
 	};
 
 	const submitChoice = async () => {
-    const moves = ['Rock', 'Paper', 'Scissors'];
-    const playerMove = playerChoice || moves[Math.floor(Math.random() * moves.length)];
+    const playerMove = playerChoice || "None";
     console.log(playerMove);
     setPlayerChoice(playerMove);
 		await postRoundMove(token, round, playerMove);
@@ -186,7 +189,6 @@ export const GameProvider = ({ children }) => {
 		setScoreB(0);
 		setRound(1);
 		setGameOver(false);
-
 		setStatus("Started");
 	};
 
@@ -197,13 +199,19 @@ export const GameProvider = ({ children }) => {
   };
 	const handleRoomJoin = (data) => {
 		console.log(data, "pusher");
-		let player1 = data.data.player_1_id;
-		let player2 = data.data.player_2_id;
+
+		console.log(userId)
+		let player1 = userId === data.data.player_1_id ? data.data.player_1_id : data.data.player_2_id;
+		let player2 = userId === data.data.player_1_id ? data.data.player_2_id : data.data.player_1_id;
+
+		let uname = userId === player1 ? data.data.player_1_username : data.data.player_2_username;
+		let oponent = userId === player2 ? data.data.player_1_username : data.data.player_2_username;
 
 		let playerCount = player1 ? (player2 ? 2 : 1) : 0;
+
 		setPlayersJoined(playerCount);
-    setScoreA(0);
-		setScoreB(0);
+		setUsername(uname);
+		setOpponentUsername(oponent);
 		setRound(1);
 		setStatus("wait");
 	};
@@ -222,13 +230,23 @@ export const GameProvider = ({ children }) => {
 
 	const joinGame = async (gameToken) => {
 		try {
-			const response = await postJoinGame(gameToken);
+			const data = await postJoinGame(gameToken);
 			
-			if (response.success) {
+			if (data.success) {
+				let player1 = userId === data.data.player_1_id ? data.data.player_1_id : data.data.player_2_id;
+				let player2 = userId === data.data.player_1_id ? data.data.player_2_id : data.data.player_1_id;
+		
+				let uname = userId === player1 ? data.data.player_1_username : data.data.player_2_username;
+				let oponent = userId === player2 ? data.data.player_1_username : data.data.player_2_username;
+		
+				console.log(data,uname,oponent,gameToken,userId,player1,player2, userId == data.data.player_1_id);
+				setUsername(uname);
+				setOpponentUsername(oponent);
 				setToken(gameToken);
+				console.log(data,username,opponentUsername,token);
 			  setPlayersJoined(2);
 
-			return response;
+			return data;
 			}
 
 		} catch (error) {
@@ -271,7 +289,11 @@ export const GameProvider = ({ children }) => {
         handleChoice,
         roundResult,
         showModal,
-        setShowModal
+        setShowModal,
+				username,
+				opponentUsername,
+				setUsername,
+				setOpponentUsername
 			}}
 		>
 			{children}
