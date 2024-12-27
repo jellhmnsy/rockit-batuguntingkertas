@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback, memo, useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, TextInput, FlatList, Dimensions,ActivityIndicator} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { useAuth } from '../contexts/AuthContext'; // Sesuaikan path jika berbeda
+import AuthContext from '../contexts/AuthContext';
+import { checkAsyncStorage} from '../contexts/AuthContext';
 //Font
 import { useFonts } from 'expo-font';
 import { Kavoon_400Regular } from '@expo-google-fonts/kavoon';
@@ -79,12 +81,33 @@ const Pagination = ({ index }) => (
   </View>
 );
 
-const handleLogout = (navigation) => {
-  console.log('User logged out');
-  navigation.navigate('Login');
-};
+// const handleLogout = (navigation) => {
+//   console.log('User logged out');
+//   navigation.navigate('Login');
+// };
 
 const HomeScreen = ({navigation}) => {
+  const logout = async () => {
+    try {
+        // setUser(null);
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('data');
+        handleLogoutAndStopAudio();
+    } catch (error) {
+        console.error('Terjadi kesalahan saat logout:', error);
+    }
+};
+  const handleLogoutWithCheck = async () => {
+    console.log('Memulai proses logout...');
+    await logout(); // Panggil fungsi logout dari AuthContext
+    console.log('Proses logout selesai');
+    // Tambahkan log untuk konfirmasi logout
+    console.log('Logout berhasil');
+
+    // Navigasi ke halaman login
+    navigation.navigate('Login');
+  };
+
   //Audio
   const { sound, isMuted, setIsMuted } = useContext(AudioContext); 
   const [icon, setIcon] = useState('volume-high-outline'); // Ikon awal
@@ -197,7 +220,7 @@ const HomeScreen = ({navigation}) => {
         colors={['#FF8552', 'transparent']}
         style={styles.background}
       />
-      <TouchableOpacity style={styles.headerExit} onPress={() => handleLogout(navigation)}>
+      <TouchableOpacity style={styles.headerExit} onPress={handleLogoutWithCheck}>
         <MaterialCommunityIcons name="exit-to-app" size={50} color="white" />
       </TouchableOpacity>
 
@@ -343,7 +366,7 @@ const HomeScreen = ({navigation}) => {
             </View>
           </TouchableWithoutFeedback>
         </TouchableOpacity>
-      </Modal>
+        </Modal>
     </View>
   ) : (
     <Text>Loading fonts...</Text>

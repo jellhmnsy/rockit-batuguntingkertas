@@ -4,26 +4,28 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AudioContext = createContext();
 
-const AudioProvider = ({ children }) => {
+const AudioProvider = ({ children, isLoggedIn }) => {
   const [sound, setSound] = useState(null);
   const [isMuted, setIsMuted] = useState(false); 
 
   useEffect(() => {
-    const loadSound = async () => {
-      try {
-        console.log('Memulai pemuatan audio');
-        const { sound: newSound } = await Audio.Sound.createAsync(
-          require('../assets/sound/backsound.mp3'),
-          { shouldPlay: true, isLooping: true }
-        );
-        setSound(newSound);
-        console.log('Audio berhasil dimuat dan diputar');
-      } catch (error) {
-        console.error('Gagal memuat audio:', error);
-      }
-    };
+    if (isLoggedIn) { // Play audio only when isLoggedIn is true
+      const loadSound = async () => {
+        try {
+          console.log('Memulai pemuatan audio');
+          const { sound: newSound } = await Audio.Sound.createAsync(
+            require('../assets/sound/backsound.mp3'),
+            { shouldPlay: true, isLooping: true }
+          );
+          setSound(newSound);
+          console.log('Audio berhasil dimuat dan diputar');
+        } catch (error) {
+          console.error('Gagal memuat audio:', error);
+        }
+      };
 
-    loadSound();
+      loadSound();
+    }
 
     return () => {
       if (sound) {
@@ -31,7 +33,19 @@ const AudioProvider = ({ children }) => {
         sound.unloadAsync();
       }
     };
-  }, []);
+  }, [isLoggedIn]); // Only re-run effect when isLoggedIn changes
+
+  const handleLogoutAndStopAudio = async () => {
+    try {
+      await AsyncStorage.removeItem('accessToken');
+      if (sound) { 
+        await sound.unloadAsync();
+        setSound(null);
+      }
+    } catch (error) {
+      console.error('Error removing token and stopping audio:', error);
+    }
+  };
 
   useEffect(() => {
     const loadIsMuted = async () => {
@@ -70,7 +84,7 @@ const AudioProvider = ({ children }) => {
   }, [sound, isMuted]);
 
   return (
-    <AudioContext.Provider value={{ sound, isMuted, setIsMuted }}>
+    <AudioContext.Provider value={{ sound, isMuted, setIsMuted, handleLogoutAndStopAudio }}>
       {children}
     </AudioContext.Provider>
   );

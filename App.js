@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect} from 'react';
 import { AudioProvider } from "./screens/AudioContext";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -11,18 +11,50 @@ import PostGameScreen from "./screens/postGameplayBotScreen";
 import RegisterScreen from "./screens/registerScreen";
 import HomeScreen from "./screens/homeScreen";
 import { AuthProvider } from './contexts/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppState } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [appState, setAppState] = useState(AppState.currentState);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem('accessToken'); 
+        if (token) {
+          setIsLoggedIn(true); 
+        }
+      } catch (error) {
+        console.error('Error checking login status:', error);
+      }
+    };
+
+    checkLoginStatus();
+
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      setAppState(nextAppState);
+      if (nextAppState === 'inactive') { 
+        // Aplikasi ditutup atau masuk ke background
+        handleLogoutAndStopAudio(); // Panggil fungsi untuk menghentikan audio
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   return (
-    <AudioProvider>
-      <AuthProvider>
-        <NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <AudioProvider isLoggedIn={isLoggedIn}> 
           <AppNavigator />
-        </NavigationContainer>
-      </AuthProvider>
-    </AudioProvider>
+        </AudioProvider>
+      </NavigationContainer>
+    </AuthProvider>
   );
 };
 

@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
     color: '#006400',
     marginBottom: 5,
     marginLeft: 5,
+    // width: 300,
     fontFamily: 'Kavoon_400Regular'
   },
   playersText: {
