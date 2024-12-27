@@ -300,7 +300,7 @@ const HomeScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       <View style={styles.headerWrapper}>
-        <Text style={styles.title}>Halo, {username || "Guest"}</Text>
+        <Text style={styles.title}>Hello, {username || "Guest"}</Text>
         <Text style={styles.subtitle}>Welcome to RockiT Game</Text>
       </View>
 
