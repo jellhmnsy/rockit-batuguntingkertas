@@ -32,6 +32,8 @@ const GameplayScreen = () => {
     roundResult,
     showModal,
     setShowModal,
+    username,
+    opponentUsername,
   } = useGame();
 
   const navigation = useNavigation();
@@ -74,13 +76,13 @@ const GameplayScreen = () => {
         <View style={styles.scoreContainer}>
           <View style={styles.scoreTitle}>
             <View style={styles.playerContainer}>
-              <Text style={styles.playerText}>You</Text>
+              <Text style={styles.playerText}>{username}</Text>
             </View>
             <View style={styles.vsContainer}>
               <Text style={styles.vsText}>vs</Text>
             </View>
             <View style={styles.botContainer}>
-              <Text style={styles.botText}>Opponent</Text>
+              <Text style={styles.botText}>{opponentUsername}</Text>
             </View>
           </View>
           <View style={styles.scores}>
