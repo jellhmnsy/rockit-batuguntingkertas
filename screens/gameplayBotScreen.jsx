@@ -13,7 +13,6 @@ import { Kavoon_400Regular } from "@expo-google-fonts/kavoon";
 import { KiwiMaru_400Regular } from "@expo-google-fonts/kiwi-maru";
 import { useAuth } from "../contexts/AuthContext"; // Import useAuth dari AuthContext.js
 
-
 const GameplayScreenBot = ({ navigation }) => {
   const [scoreA, setScoreA] = useState(0);
   const [scoreB, setScoreB] = useState(0);
@@ -73,9 +72,8 @@ const GameplayScreenBot = ({ navigation }) => {
 
   useEffect(() => {
     if (showHands && playerChoice && handLeft && !gameOver) {
-      const result = determineWinner(playerChoice, handLeft); 
-      setRoundResult(result); 
-
+      const result = determineWinner(playerChoice, handLeft);
+      setRoundResult(result);
 
       if (result === "win") {
         setScoreA((prevScore) => prevScore + 1);
@@ -83,11 +81,9 @@ const GameplayScreenBot = ({ navigation }) => {
         setScoreB((prevScore) => prevScore + 1);
       }
 
-
       setTimeout(() => {
         setShowModal(true);
       }, 1000);
-
 
       const timeout = setTimeout(() => {
         setShowModal(false);
@@ -106,7 +102,7 @@ const GameplayScreenBot = ({ navigation }) => {
 
       return () => clearTimeout(timeout); // clear timeout saat komponen diperbarui
     }
-  }, [showHands, playerChoice, handLeft, gameOver]); 
+  }, [showHands, playerChoice, handLeft, gameOver]);
 
   const startNewRound = () => {
     setPlayerChoice(null);
@@ -116,16 +112,16 @@ const GameplayScreenBot = ({ navigation }) => {
     setSelectedButton(null);
   };
 
-//   const resetGame = () => {
-//     setScoreA(0);
-//     setScoreB(0);
-//     setPlayerChoice(null);
-//     setHandLeft(null);
-//     setShowHands(false);
-//     setTimer(5);
-//     setGameOver(false); // Sembunyikan layar Game Over
-//     setShowModal(false); // Sembunyikan modal
-//   };
+  //   const resetGame = () => {
+  //     setScoreA(0);
+  //     setScoreB(0);
+  //     setPlayerChoice(null);
+  //     setHandLeft(null);
+  //     setShowHands(false);
+  //     setTimer(5);
+  //     setGameOver(false); // Sembunyikan layar Game Over
+  //     setShowModal(false); // Sembunyikan modal
+  //   };
 
   // const handleChoice = (choice) => {
   //   if (!showHands && timer > 0) {
@@ -133,14 +129,14 @@ const GameplayScreenBot = ({ navigation }) => {
   //   }
   // };
 
-useEffect(() => {
+  useEffect(() => {
     if (gameOver) {
-      navigation.navigate('PostGame', {
+      navigation.navigate("PostGame", {
         scoreA,
         scoreB,
       });
     }
-  }, [gameOver]); 
+  }, [gameOver]);
 
   const [fontsLoaded] = useFonts({
     Kavoon_400Regular,
@@ -167,7 +163,7 @@ useEffect(() => {
 
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.lifeText}>Life</Text>
+            <Text style={styles.lifeText}></Text>
           </View>
 
           {/* Score */}
@@ -187,14 +183,14 @@ useEffect(() => {
             </View>
             <View style={styles.scores}>
               <View style={styles.scoreBoxPlayer}>
-                <View  style={styles.scoreBox}>
+                <View style={styles.scoreBox}>
                   <Text style={styles.scoreText}>{scoreA}</Text>
                 </View>
               </View>
               <View style={styles.scoreBoxBot}>
                 <View style={styles.scoreBox}>
                   <Text style={styles.scoreText}>{scoreB}</Text>
-                </View>                
+                </View>
               </View>
             </View>
           </View>
@@ -242,36 +238,45 @@ useEffect(() => {
 
           {/* Buttons */}
           <View style={styles.buttonsContainer}>
-        <TouchableOpacity 
-          style={[styles.button, selectedButton === "scissors" && { backgroundColor: "#FF8552" }]} 
-          onPress={() => handleChoice("scissors")}
-        >
-          <Image 
-            source={require("../assets/scissors-hand.png")} 
-            style={styles.buttonIconHand} 
-          />
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                selectedButton === "scissors" && { backgroundColor: "#FF8552" },
+              ]}
+              onPress={() => handleChoice("scissors")}
+            >
+              <Image
+                source={require("../assets/scissors-hand.png")}
+                style={styles.buttonIconHand}
+              />
+            </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.button, selectedButton === "rock" && { backgroundColor: "#FF8552" }]} 
-          onPress={() => handleChoice("rock")}
-        >
-          <Image 
-            source={require("../assets/rock-hand.png")} 
-            style={styles.buttonIconRock} 
-          />
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                selectedButton === "rock" && { backgroundColor: "#FF8552" },
+              ]}
+              onPress={() => handleChoice("rock")}
+            >
+              <Image
+                source={require("../assets/rock-hand.png")}
+                style={styles.buttonIconRock}
+              />
+            </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.button, selectedButton === "paper" && { backgroundColor: "#FF8552" }]} 
-          onPress={() => handleChoice("paper")}
-        >
-          <Image 
-            source={require("../assets/paper-hand.png")} 
-            style={styles.buttonIconPaper} 
-          />
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                selectedButton === "paper" && { backgroundColor: "#FF8552" },
+              ]}
+              onPress={() => handleChoice("paper")}
+            >
+              <Image
+                source={require("../assets/paper-hand.png")}
+                style={styles.buttonIconPaper}
+              />
+            </TouchableOpacity>
+          </View>
         </>
       </View>
 
@@ -280,7 +285,7 @@ useEffect(() => {
         visible={showModal}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setShowModal(false)} 
+        onRequestClose={() => setShowModal(false)}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -333,8 +338,8 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-    justifyContent: "center", 
-    alignItems: "center", 
+    justifyContent: "center",
+    alignItems: "center",
   },
   backgroundGameOver: {},
   overlay: {
@@ -344,10 +349,10 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     alignSelf: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.65)", 
+    backgroundColor: "rgba(255, 255, 255, 0.65)",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 5, 
+    zIndex: 5,
   },
   container: {
     // flex: 1,
@@ -390,7 +395,7 @@ const styles = StyleSheet.create({
   },
   vsContainer: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   botContainer: {
     flex: 3,
@@ -414,7 +419,7 @@ const styles = StyleSheet.create({
     color: "#000",
     fontFamily: "Kavoon_400Regular",
     textAlign: "center",
-    textAlignVertical: "bottom"
+    textAlignVertical: "bottom",
   },
   scores: {
     flexDirection: "row",
@@ -510,11 +515,11 @@ const styles = StyleSheet.create({
     marginBottom: 100,
   },
   buttonsContainer: {
-    flexDirection: "row", 
-    justifyContent: "space-between", 
-    alignItems: "center", 
-    width: "80%", 
-    alignSelf: "center", 
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "80%",
+    alignSelf: "center",
     marginBottom: 40,
   },
   button: {
@@ -525,7 +530,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 10,
-    zIndex: 10, 
+    zIndex: 10,
   },
   buttonIconHand: {
     width: 50.36,
@@ -544,13 +549,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", 
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    width: 331, 
+    width: 331,
     height: 259,
     backgroundColor: "#fff",
-    borderRadius: 125, 
+    borderRadius: 125,
     alignItems: "center",
     justifyContent: "center",
     elevation: 5,

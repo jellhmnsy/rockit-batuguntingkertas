@@ -12,7 +12,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-// import AppLoading from 'expo-app-loading';
 import { Kavoon_400Regular } from '@expo-google-fonts/kavoon';
 import { KiwiMaru_300Light } from '@expo-google-fonts/kiwi-maru';
 import { KiwiMaru_400Regular } from '@expo-google-fonts/kiwi-maru';
@@ -20,63 +19,106 @@ import { KiwiMaru_500Medium } from '@expo-google-fonts/kiwi-maru';
 
 
 import Toast from "react-native-toast-message";
-import { login } from "../api/restApi"; // Import the login API function
-import { useAuth } from "../contexts/AuthContext.js"; // Import AuthContext
+import { login } from "../api/restApi";
+import { useAuth } from "../contexts/AuthContext.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen({ navigation }) {
-  const { loginAuth } = useAuth(); // Extract login function from AuthContext
+  const { loginAuth, user } = useAuth();
   const [username, setUsername] = useState("");
   const [pin, setPin] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [pinError, setPinError] = useState("");
+  const [showAlert, setShowAlert] = useState(false); // State untuk mengontrol tampilan alert
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertNavigates, setAlertNavigates] = useState(false);
 
+  useEffect(() => {
+    if (showAlert) {
+        Alert.alert(
+            alertTitle,
+            alertMessage,
+            [{ text: "OK", onPress: () => {
+                setShowAlert(false);
+                if (alertNavigates) {
+                    navigation.reset({ index: 0, routes: [{ name: "Home" }] });
+                }
+            } }],
+            { cancelable: false } // mencegah menutup alert dengan menekan di luar alert
+        );
+    }
+}, [showAlert, alertMessage, navigation, alertNavigates]);
   const handleLogin = async () => {
     let valid = true;
-  
+
     // Reset error messages
     setUsernameError("");
     setPinError("");
-  
+
     // Validate username and PIN
-    if (!username || !pin) {
+    if (!username) {
       setUsernameError("Username is required.");
+      valid = false;
+    }
+    if (!pin) {
       setPinError("PIN is required.");
       valid = false;
     }
-  
+
     if (valid) {
       try {
-        await loginAuth(username, pin);
-  
-        Toast.show({
-          type: "success",
-          text1: "Login Successful",
-          text2: "Welcome back!",
-          position: "top",
-          visibilityTime: 1500,
-          topOffset: 50,
-        });
-  
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Home" }],
-        });
-  
+        const success = await loginAuth(username, pin);
+
+        if (valid) {
+          try {
+              const success = await loginAuth(username, pin);
+
+              if (success) {
+                  setAlertTitle("Login Successful");
+                  setAlertMessage("Welcome back!");
+                  setAlertNavigates(true);
+                  setShowAlert(true);
+              }
+          } catch (error) {
+              console.log('Error occurred:', error.message);
+
+              if (error.message.includes("invalid username or PIN")) {
+                  setAlertTitle("Login Failed");
+                  setAlertMessage("Invalid username or PIN. Please try again.");
+              } else {
+                  setAlertTitle("Login Failed");
+                  setAlertMessage(error.message || "Something went wrong.");
+              }
+              setAlertNavigates(false);
+              setShowAlert(true);
+
+          }
+      }
+
+
       } catch (error) {
-        console.log(error.message);
-        Toast.show({
-          type: "error",
-          text1: "Login Failed",
-          text2: error.message || "Something went wrong.",
-          position: "top",
-          visibilityTime: 2000,
-          topOffset: 50,
-        });
+        console.log('Error occurred:', error.message);
+
+        // Check for invalid username or PIN
+        if (error.message.includes("invalid username or PIN")) {
+          Alert.alert(
+            "Login Failed",
+            "Invalid username or PIN. Please try again.",
+            [{ text: "OK" }]
+          );
+        } else {
+          // General error fallback
+          Alert.alert(
+            "Login Failed",
+            error.message || "Something went wrong.",
+            [{ text: "OK" }]
+          );
+        }
       }
     }
   };
-  
 
   const handleRegisterRedirect = () => {
     navigation.navigate('Register');
@@ -105,30 +147,29 @@ export default function LoginScreen({ navigation }) {
             />
           </View>
           <>
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor="#aaa"
-            value={username}
-            onChangeText={setUsername}
-          />
-          {usernameError ? (
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor="#aaa"
+              value={username}
+              onChangeText={setUsername}
+            />
+            {usernameError ? (
               <Text style={styles.errorText}>{usernameError}</Text>
             ) : null}
 
-
-          <TextInput
-            style={styles.input}
-            placeholder="PIN"
-            placeholderTextColor="#aaa"
-            secureTextEntry
-            value={pin}
-            onChangeText={setPin}
-            keyboardType="numeric"
-          />
-          {pinError ? (
+            <TextInput
+              style={styles.input}
+              placeholder="PIN"
+              placeholderTextColor="#aaa"
+              secureTextEntry
+              value={pin}
+              onChangeText={setPin}
+              keyboardType="numeric"
+            />
+            {pinError ? (
               <Text style={styles.errorText}>{pinError}</Text>
-            ) : null} 
+            ) : null}
           </>
           <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
             <View style={styles.buttonInnerShadow}>
@@ -149,9 +190,9 @@ export default function LoginScreen({ navigation }) {
       </ImageBackground>
     </TouchableWithoutFeedback>
   ) : (
-      <Text>Loading fonts...</Text>
-    );
-};
+    <Text>Loading fonts...</Text>
+  );
+}
 
 const styles = StyleSheet.create({
   background: {

@@ -14,6 +14,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
 
+import { GameProvider } from "./contexts/GameContext";
+import { AudioProvider } from "./screens/AudioContext";
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -48,13 +50,15 @@ const App = () => {
   }, []);
 
   return (
+    <AudioProvider>
     <AuthProvider>
       <NavigationContainer>
-        <AudioProvider isLoggedIn={isLoggedIn}> 
+        <GameProvider>
           <AppNavigator />
-        </AudioProvider>
+        </GameProvider>
       </NavigationContainer>
     </AuthProvider>
+    </AudioProvider>
   );
 };
 

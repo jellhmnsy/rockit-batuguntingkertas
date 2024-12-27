@@ -15,13 +15,14 @@ import { TouchableWithoutFeedback } from 'react-native-web';
 import { useFonts } from "@expo-google-fonts/kavoon";
 import { Kavoon_400Regular } from "@expo-google-fonts/kavoon";
 import { KiwiMaru_400Regular } from "@expo-google-fonts/kiwi-maru";
-
 //Api
 import { getLeaderboard} from "../api/restApi";
+import { useGame } from "../contexts/GameContext";
 
 const PostGameScreen = ({ route, navigation }) => {
   const { scoreA, scoreB } = route.params;
 
+  const { resetGameToken,username,opponentUsername,setUsername, setOpponentUsername} = useGame();
   //Modal Leaderboard
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState([]);
@@ -29,6 +30,7 @@ const PostGameScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  
   useEffect(() => {
       const fetchData = async () => {
         try {
@@ -52,7 +54,6 @@ const PostGameScreen = ({ route, navigation }) => {
     }, []);
     
       // Render baris tabel
-
     const renderItem = ({ item }) => (
       <View style={[styles.row, item.id === userRank?.id ? styles.highlightRow : null]}>
         <View style={styles.cellRankContainer}>
@@ -70,10 +71,11 @@ const PostGameScreen = ({ route, navigation }) => {
   });
 
   const handleMenuPress = () => {
+    resetGameToken();
+    setUsername(null);
+    setOpponentUsername(null);
     navigation.navigate("Home"); // Navigate to Home screen
   };
-
-  //Handle Leaderboard
   const handleLeaderboardPress = () => {
     setIsModalVisible('leaderboard', true);
   }
@@ -81,11 +83,11 @@ const PostGameScreen = ({ route, navigation }) => {
     setIsModalVisible(false);
   };
 
-
   if (!fontsLoaded) {
     return <Text>Loading fonts...</Text>;
   }
 
+  
   return fontsLoaded ?(
     <ImageBackground
       source={require("../assets/post-gameplay-bg.png")}
@@ -102,7 +104,17 @@ const PostGameScreen = ({ route, navigation }) => {
         </View>
         {/* Score */}
         <View style={styles.scoreContainer}>
-          <Text style={styles.scoreTitle}>A vs B</Text>
+          {opponentUsername ? <Text style={styles.scoreTitle}>{username} vs {opponentUsername}</Text> : 
+            <View style={styles.scoreTitleContainer}>
+              <Text style={styles.scoreTitle}>You</Text>
+              {/* <Text style={[styles.scoreTitle, {color: '#fff',marginLeft: 10}
+              ]}> vs </Text> */}
+              <Image
+              source={require("../assets/icon/home/bot.png")}
+              style={styles.image}
+            />
+            </View>
+          }
           <View style={styles.scores}>
             <View style={styles.scoreBox}>
               <Text style={styles.scoreText}>{scoreA}</Text>
@@ -203,6 +215,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#046865",
     justifyContent: "center",
   },
+  image:{
+    width: 50,
+    height: 50,
+    marginTop: -10
+  },
   gameOverImage: {
     justifyContent: "center",
     alignItems: "center",
@@ -246,6 +263,13 @@ const styles = StyleSheet.create({
   scoreContainer: {
     alignItems: "center",
     marginBottom: 30,
+  },
+  scoreTitleContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap:60,
+    marginRight: 10,
   },
   scoreTitle: {
     fontSize: 40,
@@ -438,6 +462,7 @@ const styles = StyleSheet.create({
   highlightRow: {
     backgroundColor: '#046865',
   },
+
 });
 
 export default PostGameScreen;
