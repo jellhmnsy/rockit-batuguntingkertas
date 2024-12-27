@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, use, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { handleLogoutAndStopAudio } from '../screens/AudioContext'; // Sesuaikan path jika berbeda
+import { handleLogoutAndStopAudio } from '../screens/audioContext'; // Sesuaikan path jika berbeda
 import { login } from '../api/restApi';
 import { useNavigation } from '@react-navigation/native';
 import { jwtDecode } from 'jwt-decode';

@@ -24,8 +24,6 @@ const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 //Audio
 import { AudioContext } from "./AudioContext";
 import { useGame } from "../contexts/GameContext";
-import { useAuth } from "../contexts/AuthContext";
-
 const slideList = [
   {
     id: 1,
@@ -55,7 +53,7 @@ const Slide = memo(({ data }) => {
               source={require("../assets/icon/home/star.png")}
             />
             <Text style={styles.firstSlideText}>
-              You will start with 3 lives, represented by stone symbols.
+            You start the game with a score of 0.
             </Text>
           </View>
           <View style={styles.pointContainer}>
@@ -64,7 +62,25 @@ const Slide = memo(({ data }) => {
               source={require("../assets/icon/home/star.png")}
             />
             <Text style={styles.firstSlideText}>
-              You "win" the game if your score exceeds your opponent's score.
+            You will have 5 seconds to choose one: rock, paper, or scissors.
+            </Text>
+          </View>
+          <View style={styles.pointContainer}>
+            <Image
+              style={{ marginTop: -10 }}
+              source={require("../assets/icon/home/star.png")}
+            />
+            <Text style={styles.firstSlideText}>
+             You win the game if you reach a score of 3 before your opponent.
+            </Text>
+          </View>
+          <View style={styles.pointContainer}>
+            <Image
+              style={{ marginTop: -10 }}
+              source={require("../assets/icon/home/star.png")}
+            />
+            <Text style={styles.firstSlideText}>
+            If the time runs out and you have not made a choice, the opponent automatically wins that round.
             </Text>
           </View>
         </View>
@@ -779,7 +795,7 @@ const styles = StyleSheet.create({
   },
   modalWrapper: {
     width: "auto",
-    height: "350",
+    height: "auto",
     margin: 20,
     marginVertical: "auto",
     backgroundColor: "white",

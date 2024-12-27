@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { AudioProvider } from "./screens/AudioContext";
+import { AudioProvider } from "./screens/audioContext";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import SplashScreen from "./screens/splashScreen";
@@ -15,7 +15,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
 
 import { GameProvider } from "./contexts/GameContext";
-import { AudioProvider } from "./screens/AudioContext";
 const Stack = createNativeStackNavigator();
 
 const App = () => {
