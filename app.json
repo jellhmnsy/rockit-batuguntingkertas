@@ -8,7 +8,7 @@
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/Splash Screen Group.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#FF8552"
     },
     "ios": {
