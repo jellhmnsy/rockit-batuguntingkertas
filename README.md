@@ -1,4 +1,4 @@
-Rockit Frontend
+## Rockit Frontend
 ## Prerequisites
 Ensure you have installed the following prerequisites on your system:
 
@@ -45,7 +45,7 @@ Ensure you have installed the following prerequisites on your system:
 ### 3. Start Expo Server
    Start the Expo development server:
    ```bash
-   expo start
+   npx expo start
    ```
 
 ### 4. Scan QR Code
