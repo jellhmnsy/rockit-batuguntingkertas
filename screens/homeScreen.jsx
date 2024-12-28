@@ -129,15 +129,31 @@ const Pagination = ({ index }) => (
 const HomeScreen = ({ navigation }) => {
   //Audio
   const { sound, isMuted, setIsMuted } = useContext(AudioContext);
-  const [icon, setIcon] = useState("volume-high-outline"); // Ikon awal
-
+  const [icon, setIcon] = useState("volume-high-outline");
+  
   useEffect(() => {
+    // Update the icon based on the isMuted state
     setIcon(isMuted ? "volume-mute-outline" : "volume-high-outline");
+  
+    // Control the sound playback based on isMuted
+    if (sound) {
+      if (isMuted) {
+        sound.pauseAsync(); // Pause the sound if muted
+      } else {
+        sound.playAsync(); // Play the sound if unmuted
+      }
+    }
   }, [isMuted]);
-
+  
   const toggleMute = async () => {
-    setIsMuted(!isMuted);
+    try {
+      setIsMuted(!isMuted); // Toggle the muted state
+      console.log("Sound toggled:", !isMuted ? "Muted" : "Unmuted");
+    } catch (error) {
+      console.error("Error toggling sound:", error);
+    }
   };
+  
 
   //Font
   const [fontsLoaded] = useFonts({
@@ -777,7 +793,6 @@ const styles = StyleSheet.create({
   modalContainer0: {
     overflow: "hidden",
     marginVertical: "auto",
-    padding: 0,
     marginHorizontal: 10,
     paddingHorizontal: 5,
     zIndex: 2,
@@ -795,7 +810,7 @@ const styles = StyleSheet.create({
   },
   modalWrapper: {
     width: "auto",
-    height: "auto",
+    height: "400",
     margin: 20,
     marginVertical: "auto",
     backgroundColor: "white",

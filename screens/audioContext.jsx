@@ -6,44 +6,50 @@ const AudioContext = createContext();
 
 const AudioProvider = ({ children, isLoggedIn }) => {
   const [sound, setSound] = useState(null);
-  const [isMuted, setIsMuted] = useState(false); 
+  const [isMuted, setIsMuted] = useState(false);
+  const soundRef = useRef(null); // Ref to track the current sound instance
 
   useEffect(() => {
-    if (isLoggedIn) { // Play audio only when isLoggedIn is true
-      const loadSound = async () => {
+    const loadSound = async () => {
+      if (isLoggedIn) {
         try {
-          console.log('Memulai pemuatan audio');
+          console.log('Loading audio...');
           const { sound: newSound } = await Audio.Sound.createAsync(
             require('../assets/sound/backsound.mp3'),
-            { shouldPlay: true, isLooping: true }
+            { shouldPlay: true, isLooping: true, volume: isMuted ? 0 : 1 }
           );
+          soundRef.current = newSound;
           setSound(newSound);
-          console.log('Audio berhasil dimuat dan diputar');
+          console.log('Audio loaded and playing.');
         } catch (error) {
-          console.error('Gagal memuat audio:', error);
+          console.error('Error loading audio:', error);
         }
-      };
-
-      loadSound();
-    }
-
-    return () => {
-      if (sound) {
-        console.log('Membongkar audio');
-        sound.unloadAsync();
       }
     };
-  }, [isLoggedIn]); // Only re-run effect when isLoggedIn changes
+
+    loadSound();
+
+    return () => {
+      if (soundRef.current) {
+        console.log('Unloading audio...');
+        soundRef.current.unloadAsync();
+        soundRef.current = null;
+        setSound(null);
+      }
+    };
+  }, [isLoggedIn, isMuted]); // Re-run when isLoggedIn or isMuted changes
 
   const handleLogoutAndStopAudio = async () => {
     try {
       await AsyncStorage.removeItem('accessToken');
-      if (sound) { 
-        await sound.unloadAsync();
+      if (soundRef.current) {
+        console.log('Stopping and unloading audio during logout...');
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
         setSound(null);
       }
     } catch (error) {
-      console.error('Error removing token and stopping audio:', error);
+      console.error('Error during logout and stopping audio:', error);
     }
   };
 
@@ -54,8 +60,8 @@ const AudioProvider = ({ children, isLoggedIn }) => {
         if (savedIsMuted !== null) {
           setIsMuted(JSON.parse(savedIsMuted));
         }
-      } catch (e) {
-        console.error('Failed to load isMuted', e);
+      } catch (error) {
+        console.error('Error loading isMuted state:', error);
       }
     };
     loadIsMuted();
@@ -65,23 +71,19 @@ const AudioProvider = ({ children, isLoggedIn }) => {
     const saveIsMuted = async () => {
       try {
         await AsyncStorage.setItem('isMuted', JSON.stringify(isMuted));
-      } catch (e) {
-        console.error('Failed to save isMuted', e);
+      } catch (error) {
+        console.error('Error saving isMuted state:', error);
       }
     };
     saveIsMuted();
   }, [isMuted]);
 
-  // Apply mute/unmute effect
+  // Update sound volume based on isMuted
   useEffect(() => {
-    if (sound) {
-      if (isMuted) {
-        sound.setVolumeAsync(0); 
-      } else {
-        sound.setVolumeAsync(1); 
-      }
+    if (soundRef.current) {
+      soundRef.current.setVolumeAsync(isMuted ? 0 : 1);
     }
-  }, [sound, isMuted]);
+  }, [isMuted]);
 
   return (
     <AudioContext.Provider value={{ sound, isMuted, setIsMuted, handleLogoutAndStopAudio }}>

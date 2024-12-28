@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { AudioProvider } from "./screens/audioContext";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -13,59 +13,63 @@ import HomeScreen from "./screens/homeScreen";
 import { AuthProvider } from './contexts/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
-
 import { GameProvider } from "./contexts/GameContext";
-const Stack = createNativeStackNavigator();
 
-const handleLogout = async () => {
-  try {
-    await AsyncStorage.removeItem('accessToken');
-    setIsLoggedIn(false);
-    console.log('User logged out successfully.');
-  } catch (error) {
-    console.error('Error during logout:', error);
-  }
-};
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [appState, setAppState] = useState(AppState.currentState);
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('accessToken');
+      setIsLoggedIn(false);
+      console.log('User logged out successfully.');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem('accessToken'); 
-        if (token) {
-          setIsLoggedIn(true); 
-        }
+        if (token) setIsLoggedIn(true);
       } catch (error) {
         console.error('Error checking login status:', error);
       }
     };
 
-    checkLoginStatus();
+    let logoutTimer;
 
     const subscription = AppState.addEventListener('change', nextAppState => {
       setAppState(nextAppState);
-      if (nextAppState === 'inactive') { 
-        handleLogout(); // Log out when the app goes inactive
+
+      if (nextAppState === 'background') {
+        logoutTimer = setTimeout(() => handleLogout(), 300000); // 5 minutes
+      } else if (nextAppState === 'active') {
+        clearTimeout(logoutTimer);
       }
     });
 
+    checkLoginStatus();
+
     return () => {
       subscription.remove();
+      clearTimeout(logoutTimer);
     };
   }, []);
 
   return (
-    <AudioProvider>
-    <AuthProvider>
-      <NavigationContainer>
-        <GameProvider>
-          <AppNavigator />
-        </GameProvider>
-      </NavigationContainer>
-    </AuthProvider>
+    <AudioProvider isLoggedIn={isLoggedIn}>
+      <AuthProvider>
+        <NavigationContainer>
+          <GameProvider>
+            <AppNavigator isLoggedIn={isLoggedIn} />
+          </GameProvider>
+        </NavigationContainer>
+      </AuthProvider>
     </AudioProvider>
   );
 };
