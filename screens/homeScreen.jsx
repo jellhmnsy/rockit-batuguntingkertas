@@ -22,7 +22,7 @@ import { getLeaderboard, getUserInfo } from "../api/restApi";
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
 //Audio
-import { AudioContext } from "./AudioContext";
+import { AudioContext } from "./audioContext";
 import { useGame } from "../contexts/GameContext";
 const slideList = [
   {

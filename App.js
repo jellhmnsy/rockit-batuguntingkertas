@@ -17,6 +17,16 @@ import { AppState } from 'react-native';
 import { GameProvider } from "./contexts/GameContext";
 const Stack = createNativeStackNavigator();
 
+const handleLogout = async () => {
+  try {
+    await AsyncStorage.removeItem('accessToken');
+    setIsLoggedIn(false);
+    console.log('User logged out successfully.');
+  } catch (error) {
+    console.error('Error during logout:', error);
+  }
+};
+
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [appState, setAppState] = useState(AppState.currentState);
@@ -38,8 +48,7 @@ const App = () => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       setAppState(nextAppState);
       if (nextAppState === 'inactive') { 
-        // Aplikasi ditutup atau masuk ke background
-        handleLogoutAndStopAudio(); // Panggil fungsi untuk menghentikan audio
+        handleLogout(); // Log out when the app goes inactive
       }
     });
 
