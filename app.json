@@ -12,7 +12,7 @@
       "backgroundColor": "#FF8552"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {
@@ -25,11 +25,10 @@
       "favicon": "./assets/logo.png"
     },
     "plugins": [
-      "expo-font",
       [
         "expo-build-properties",
         {
-          "android": {
+          "android":{
             "usesCleartextTraffic": true
           },
           "ios": {

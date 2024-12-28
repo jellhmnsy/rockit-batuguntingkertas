@@ -7,7 +7,7 @@ const AudioContext = createContext();
 const AudioProvider = ({ children, isLoggedIn }) => {
   const [sound, setSound] = useState(null);
   const [isMuted, setIsMuted] = useState(false);
-  const soundRef = useRef(null); // Ref to track the current sound instance
+  const soundRef = useRef(null); 
 
   useEffect(() => {
     const loadSound = async () => {
@@ -37,7 +37,7 @@ const AudioProvider = ({ children, isLoggedIn }) => {
         setSound(null);
       }
     };
-  }, [isLoggedIn, isMuted]); // Re-run when isLoggedIn or isMuted changes
+  }, [isLoggedIn, isMuted]); 
 
   const handleLogoutAndStopAudio = async () => {
     try {
@@ -78,7 +78,6 @@ const AudioProvider = ({ children, isLoggedIn }) => {
     saveIsMuted();
   }, [isMuted]);
 
-  // Update sound volume based on isMuted
   useEffect(() => {
     if (soundRef.current) {
       soundRef.current.setVolumeAsync(isMuted ? 0 : 1);
