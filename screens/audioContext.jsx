@@ -32,16 +32,22 @@ const AudioProvider = ({ children, isLoggedIn }) => {
     return () => {
       if (soundRef.current) {
         console.log('Unloading audio...');
-        soundRef.current.unloadAsync();
+        soundRef.current.unloadAsync()
+          .then(() => {
+            console.log('Audio unloaded successfully');
+          })
+          .catch(error => {
+            console.error('Error unloading audio:', error);
+          });
         soundRef.current = null;
         setSound(null);
       }
     };
-  }, [isLoggedIn, isMuted]); 
+  }, [isLoggedIn]);
 
   const handleLogoutAndStopAudio = async () => {
     try {
-      await AsyncStorage.removeItem('accessToken');
+      // ...
       if (soundRef.current) {
         console.log('Stopping and unloading audio during logout...');
         await soundRef.current.unloadAsync();
